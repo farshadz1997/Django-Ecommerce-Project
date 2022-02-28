@@ -86,7 +86,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="logo">
-                        <h1><a href="./"><img src="img/logo.png"></a></h1>
+                        <h1><a href="{%url 'home:index'%}"><img src="{%static 'img/logo.png'%}"></a></h1>
                     </div>
                 </div>
                 
@@ -112,8 +112,8 @@
                 </div> 
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="index.html">Home</a></li>
-                        <li><a href="shop.html">Shop page</a></li>
+                        <li {% if request.resolver_match.app_name == "home" %}class="active"{% endif %}><a href="{%url 'home:index'%}">Home</a></li>
+                        <li {% if request.resolver_match.app_name == "Products" %}class="active"{% endif %}><a href="{%url 'Products:Product_list'%}">Shop page</a></li>
                         <li><a href="single-product.html">Single product</a></li>
                         <li><a href="cart.html">Cart</a></li>
                         <li><a href="checkout.html">Checkout</a></li>

@@ -9,10 +9,6 @@ class ProductListView(ListView):
     context_object_name = 'products'
     paginate_by = 12
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-    
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'Products/Product_detail.html'
@@ -27,11 +23,13 @@ class ProductDetailView(DetailView):
 class ProductSearchView(ListView):
     template_name = 'Products/Product_list.html'
     context_object_name = 'products'
+    paginate_by = 12
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.GET.get('q'):
-            context['search_value'] = self.request.GET.get('q')
+        get_copy = self.request.GET.copy()
+        parameters = get_copy.pop('page', True) and get_copy.urlencode()
+        context['parameters'] = parameters
         return context
     
     def get_queryset(self):
