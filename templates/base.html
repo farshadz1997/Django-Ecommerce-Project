@@ -29,7 +29,8 @@
     <link rel="stylesheet" href="{% static 'css/owl.carousel.css'%}">
     <link rel="stylesheet" href="{% static 'style.css'%}">
     <link rel="stylesheet" href="{% static 'css/responsive.css'%}">
-
+    <!--jQuery-->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -92,7 +93,8 @@
                 
                 <div class="col-sm-6">
                     <div class="shopping-item">
-                        <a href="cart.html">Cart - <span class="cart-amunt">$100</span> <i class="fa fa-shopping-cart"></i> <span class="product-count">5</span></a>
+                        <a href="{%url 'basket:basket_summary'%}">Cart - <span class="cart-amunt" id="basket-total-price">${{basket.get_total_price}}</span></a>
+                        <i class="fa fa-shopping-cart"></i> <span class="product-count" id="basket-qty">{{basket|length}}</span>
                     </div>
                 </div>
             </div>
@@ -118,6 +120,14 @@
                         <li><a href="cart.html">Cart</a></li>
                         <li><a href="checkout.html">Checkout</a></li>
                         <li><a href="#">Category</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Category <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                {%for category in Categories%}
+                                    <li><a href="{{category.get_absolute_url}}">{{category.title}}</a></li>
+                                {%endfor%}
+                            </ul>
+                        </li>
                         <li><a href="#">Others</a></li>
                         <li><a href="#">Contact</a></li>
                     </ul>
@@ -220,13 +230,13 @@
 <script src="{% static 'js/jquery.sticky.js'%}"></script>
 
 <!-- jQuery easing -->
-<script src="{% static 'js/jquery.easing.1.3.min.js'%}"></script>
-
+{% comment %} <script src="{% static 'js/jquery.easing.1.3.min.js'%}"></script> {% endcomment %}
 <!-- Main Script -->
 <script src="{% static 'js/main.js'%}"></script>
 
 <!-- Slider -->
 <script type="text/javascript" src="{% static 'js/bxslider.min.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/script.slider.js'%}"></script>
+
 </body>
 </html>

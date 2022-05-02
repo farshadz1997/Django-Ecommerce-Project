@@ -5,6 +5,10 @@ from ckeditor.fields import RichTextField
 from django.urls import reverse
 
 
+class ProductManager(models.Manager):
+    def get_queryset(self):
+        return super(ProductManager, self).get_queryset().filter(is_active = True)
+
 class Product(models.Model):
     title = models.CharField(max_length=255, verbose_name='Title')
     availability = models.BooleanField(default=True, verbose_name='Availability')
@@ -19,6 +23,10 @@ class Product(models.Model):
     picture_2 = models.ImageField(verbose_name='Picture 2', upload_to = 'Products/', blank=True, null=True)
     picture_3 = models.ImageField(verbose_name='Picture 3', upload_to = 'Products/', blank=True, null=True)
     picture_4 = models.ImageField(verbose_name='Picture 4', upload_to = 'Products/', blank=True, null=True)
+    in_stock = models.BooleanField(default=True, verbose_name='Availability in stock')
+    is_active = models.BooleanField(default = True)
+    objects = models.Manager()
+    products = ProductManager()
     pub_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
     

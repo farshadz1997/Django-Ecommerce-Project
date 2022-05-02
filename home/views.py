@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_list_or_404, get_object_or_404
-from Products.models import Product
+from Products.models import Product, Category
 from django.views.generic.base import TemplateView
 
 

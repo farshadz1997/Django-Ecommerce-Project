@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
-from .models import Product
+from .models import Product, Category
 from django.db.models import Q
 
 class ProductListView(ListView):
@@ -35,7 +35,7 @@ class ProductSearchView(ListView):
     def get_queryset(self):
         if self.request.GET.get('q'):
             query = self.request.GET.get('q')
-            return Product.objects.filter(Q(title__icontains=query) | Q(description__icontains=query))
+            return Product.objects.filter(Q(title__icontains=query)).order_by('-pub_date')
         
 class ProductCategoryView(ListView):
     template_name = 'Products/Product_list.html'

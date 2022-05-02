@@ -97,7 +97,7 @@
                                         <img src="{{product.main_picture|thumbnail_url:'index_latest'}}" alt="{{product.title}}">
                                         <div class="product-hover">
                                             <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
-                                            <a href="single-product.html" class="view-details-link"><i class="fa fa-link"></i> See details</a>
+                                            <a href="{{product.get_absolute_url}}" class="view-details-link"><i class="fa fa-link"></i> See details</a>
                                         </div>
                                     </div>
                                     <h2><a href="single-product.html">{{product.title}}</a></h2>
