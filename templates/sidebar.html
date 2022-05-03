@@ -1,0 +1,41 @@
+{%load thumbnail%}
+
+<div class="col-md-4">
+    <div class="single-sidebar">
+        <h2 class="sidebar-title">Search Products</h2>
+        <form action="{%url 'Products:Product_search'%}" method="GET">
+            <input type="text" placeholder="Search products..." name="q">
+            <input type="submit" value="Search">
+        </form>
+    </div>
+    
+    <!--Recent products-->
+    <div class="single-sidebar">
+        <h2 class="sidebar-title">Products</h2>
+        {%for recent_product in recent_products%}
+            <div class="thubmnail-recent">
+                <img src="{{recent_product.main_picture|thumbnail_url:'detail_recent_product'}}" class="recent-thumb" alt="{{recent_product.title}}">
+                <h2><a href="{{recent_product.get_absolute_url}}">{{recent_product.title}}</a></h2>
+                <div class="product-sidebar-price">
+                    {%if recent_product.discount != None%}
+                        <ins>${{recent_product.get_discount_price}}</ins><del>${{recent_product.price}}</del>
+                    {%else%}
+                        <ins>${{recent_product.price}}</ins>
+                    {%endif%}
+                </div>                             
+            </div>
+        {%endfor%}
+    </div>
+    
+    <!--Recent posts-->
+    <div class="single-sidebar">
+        <h2 class="sidebar-title">Recent Posts</h2>
+        <ul>
+            <li><a href="">Sony Smart TV - 2015</a></li>
+            <li><a href="">Sony Smart TV - 2015</a></li>
+            <li><a href="">Sony Smart TV - 2015</a></li>
+            <li><a href="">Sony Smart TV - 2015</a></li>
+            <li><a href="">Sony Smart TV - 2015</a></li>
+        </ul>
+    </div>
+</div>
