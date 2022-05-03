@@ -3,7 +3,7 @@
 {%load thumbnail%}
 {%block title%}Ustora | Cart{%endblock title%}
 
-{%block content%} 
+{%block content%}
     <div class="product-big-title-area">
         <div class="container">
             <div class="row">
@@ -14,7 +14,8 @@
                 </div>
             </div>
         </div>
-    </div> <!-- End Page title area -->
+    </div> 
+    <!-- End Page title area -->
     
     
     <div class="single-product-area">
@@ -123,10 +124,11 @@
                                 <h2>Cart Totals</h2>
 
                                 <table cellspacing="0">
+                                    {%with basket_total_price=basket.get_total_price%}
                                     <tbody>
                                         <tr class="cart-subtotal">
                                             <th>Cart Subtotal</th>
-                                            <td><span class="amount" id="cart-subtotal">${{basket.get_total_price}}</span></td>
+                                            <td><span class="amount" id="cart-subtotal">${{basket_total_price}}</span></td>
                                         </tr>
 
                                         <tr class="shipping">
@@ -136,9 +138,10 @@
 
                                         <tr class="order-total">
                                             <th>Order Total</th>
-                                            <td><strong><span class="amount" id="subtotal">${{basket.get_total_price}}</span></strong> </td>
+                                            <td><strong><span class="amount" id="subtotal">${{basket_total_price}}</span></strong> </td>
                                         </tr>
                                     </tbody>
+                                    {%endwith%}
                                 </table>
                             </div>
 
@@ -446,7 +449,7 @@
         error: function (xhr, errmsg, err) {}
         });
     })
-    
+
     // Update Item
     $(document).on('click', '#update-button', function (e) {
         e.preventDefault();
@@ -496,5 +499,28 @@
         val--;
         document.getElementById("select-"+id).value = val;
     }
+
+    //add to cart buttons
+    $(document).on('click', '.add_to_cart_button', function(e) {
+        e.preventDefault();
+        var prodid = $(this).attr('data-product_id');
+        var qty = $(this).attr('data-quantity');
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'basket:basket_add' %}",
+            data: {
+                productid: prodid,
+                productqty: qty,
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: 'post',
+            },
+        success: function (json) {
+            document.getElementById("basket-total-price").innerHTML = json.subtotal
+            document.getElementById("basket-qty").innerHTML = json.qty
+            location.href = "/cart/";
+        },
+        error: function (xhr, errmsg, err) {}
+        });
+    })
 </script>
 {%endblock content%}

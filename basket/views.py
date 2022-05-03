@@ -8,7 +8,7 @@ import json
 def basket_summary(request):
     basket = Basket(request)
     products = Product.objects.all().order_by('-pub_date')[:4]
-    offers = Product.products.order_by('?')[:2]
+    offers = Product.products.order_by('?').exclude(id__in=basket.basket.keys())[:2]
     return render(request, 'basket/basket_summary.html', {'basket': basket, 'recent_products': products, 'offers': offers})
 
 def basket_add(request):
