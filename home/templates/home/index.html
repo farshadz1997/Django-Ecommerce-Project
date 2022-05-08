@@ -10,7 +10,7 @@
 			<div class="block-slider block-slider4">
 				<ul class="" id="bxslider-home4">
 					<li>
-						<img src="img/h4-slide.png" alt="Slide">
+						<img src="{%static 'img/h4-slide.png'%}" alt="Slide">
 						<div class="caption-group">
 							<h2 class="caption title">
 								iPhone <span class="primary">6 <strong>Plus</strong></span>
@@ -19,7 +19,8 @@
 							<a class="caption button-radius" href="#"><span class="icon"></span>Shop now</a>
 						</div>
 					</li>
-					<li><img src="img/h4-slide2.png" alt="Slide">
+					<li>
+                        <img src="{%static 'img/h4-slide2.png'%}" alt="Slide">
 						<div class="caption-group">
 							<h2 class="caption title">
 								by one, get one <span class="primary">50% <strong>off</strong></span>
@@ -28,7 +29,8 @@
 							<a class="caption button-radius" href="#"><span class="icon"></span>Shop now</a>
 						</div>
 					</li>
-					<li><img src="img/h4-slide3.png" alt="Slide">
+					<li>
+                        <img src="{%static 'img/h4-slide3.png'%}" alt="Slide">
 						<div class="caption-group">
 							<h2 class="caption title">
 								Apple <span class="primary">Store <strong>Ipod</strong></span>
@@ -37,7 +39,8 @@
 							<a class="caption button-radius" href="#"><span class="icon"></span>Shop now</a>
 						</div>
 					</li>
-					<li><img src="img/h4-slide4.png" alt="Slide">
+					<li>
+                        <img src="{%static 'img/h4-slide4.png'%}" alt="Slide">
 						<div class="caption-group">
 						  <h2 class="caption title">
 								Apple <span class="primary">Store <strong>Ipod</strong></span>
@@ -91,16 +94,17 @@
                     <div class="latest-product">
                         <h2 class="section-title">Latest Products</h2>
                         <div class="product-carousel">
-                            {%for product in Latest_products%}
+                            {%with latest_P=Latest_products%}
+                            {%for product in latest_P%}
                                 <div class="single-product">
                                     <div class="product-f-image">
                                         <img src="{{product.main_picture|thumbnail_url:'index_latest'}}" alt="{{product.title}}">
                                         <div class="product-hover">
-                                            <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                            <a class="add-to-cart-link" data-index="{{product.id}}"><i class="fa fa-shopping-cart"></i> Add to cart</a>
                                             <a href="{{product.get_absolute_url}}" class="view-details-link"><i class="fa fa-link"></i> See details</a>
                                         </div>
                                     </div>
-                                    <h2><a href="single-product.html">{{product.title}}</a></h2>
+                                    <h2><a href="{{product.get_absolute_url}}">{{product.title}}</a></h2>
                                     <div class="product-carousel-price">
                                     {%if product.discount != None%}
                                         <ins>${{product.get_discount_price}}</ins><del>${{product.price}}</del>
@@ -110,6 +114,7 @@
                                     </div> 
                                 </div>
                             {%endfor%}
+                            {%endwith%}
                         </div>
                     </div>
                 </div>
@@ -290,5 +295,27 @@
             </div>
         </div>
     </div> <!-- End product widget area -->
-    
+
+<script>
+    $(document).ready(function($){
+        $(document).on('click', '.add-to-cart-link', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '{% url "basket:basket_add" %}',
+                data: {
+                    productid: $(this).data('index'),
+                    productqty: "1",
+                    csrfmiddlewaretoken: "{{csrf_token}}",
+                    action: 'post'
+                },
+                success: function (json) {
+                    $("#basket-total-price").html(json.subtotal)
+                    $("#basket-qty").html(json.qty)
+                },
+                error: function (xhr, errmsg, err) {}
+            });
+        });
+    });
+</script>
 {%endblock%} 

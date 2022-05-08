@@ -1,6 +1,7 @@
 {%extends 'base.html'%}
 {%load static%}
 {%load thumbnail%}
+{%load product_tags%}
 {%block title%}{{product.title}}{%endblock title%}
 {%block content%}
     
@@ -59,7 +60,7 @@
                                     
                                     <form action="" class="cart">
                                         <div class="quantity">
-                                            <input type="number" id="select" size="4" class="input-text qty text" title="Qty" value="1" name="quantity" min="1" step="1">
+                                            <input type="number" id="select" size="4" class="input-text qty text" title="Qty" value={% get_num_of_product %} name="quantity" min="1" step="1">
                                         </div>
                                         <button class="add_to_cart_button" id="add-button" type="button" value={{product.id}}>Add to cart</button>
                                     </form>   
@@ -136,8 +137,15 @@
     </div>
 
 <script>
+$(document).ready(function($){
+    var defaultValue = $('#select').val();
     $(document).on('click', '#add-button', function (e) {
         e.preventDefault();
+        if ($('#select').val() <= parseInt(0)) {
+            alert('Quantity must be greater than 0');
+            $('#select').val(defaultValue);
+            return false;
+        };
         $.ajax({
             type: 'POST',
             url: '{% url "basket:basket_add" %}',
@@ -153,6 +161,7 @@
             },
             error: function (xhr, errmsg, err) {}
         });
-    })
+    });
+})
 </script>
 {%endblock content%}

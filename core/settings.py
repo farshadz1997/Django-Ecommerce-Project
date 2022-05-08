@@ -73,6 +73,9 @@ TEMPLATES = [
                 'Products.context_processors.categories',
                 'basket.context_processors.basket',
             ],
+            'builtins': [
+                'Products.templatetags.product_tags',
+            ]
         },
     },
 ]
