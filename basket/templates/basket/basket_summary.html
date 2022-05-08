@@ -97,6 +97,7 @@
                             <div class="cart-collaterals">
 
                             <!--interested products-->
+                            {%if offers|length > 0%}
                             <div class="cross-sells">
                                 <h2>You may be interested in...</h2>
                                 <ul class="products">
@@ -118,8 +119,10 @@
                                     {%endfor%}
                                 </ul>
                             </div>
+                            {%endif%}
 
                             <!--cart totals/info-->
+                            {%if basket|length > 0%}
                             <div class="cart_totals ">
                                 <h2>Cart Totals</h2>
 
@@ -144,6 +147,7 @@
                                     {%endwith%}
                                 </table>
                             </div>
+                            {%endif%}
 
                             {%if basket|length > 0%}
                             <!--shipping calculator-->
@@ -440,11 +444,12 @@
                 $('.actions').hide("slow");
                 $('#empty-cart').show("slow");
                 $('.shipping_calculator').hide("slow");
+                $('.cart_totals').hide('slow');
             };
-            document.getElementById("basket-total-price").innerHTML = json.subtotal;
-            document.getElementById("basket-qty").innerHTML = json.qty
-            document.getElementById("subtotal").innerHTML = json.subtotal
-            document.getElementById("cart-subtotal").innerHTML = json.subtotal
+            $('#basket-total-price').html(json.subtotal);
+            $('#basket-qty').html(json.qty);
+            $('#subtotal').html(json.subtotal);
+            $('#cart-subtotal').html(json.subtotal);
         },
         error: function (xhr, errmsg, err) {}
         });
@@ -470,13 +475,13 @@
             action: 'post'
         },
         success: function (json) {
-            document.getElementById("basket-total-price").innerHTML = json.subtotal;
-            document.getElementById("subtotal").innerHTML = json.subtotal;
-            document.getElementById("cart-subtotal").innerHTML = json.subtotal;
-            document.getElementById("basket-qty").innerHTML = json.qty;
+            $('#basket-total-price').html(json.subtotal);
+            $('#basket-qty').html(json.qty);
+            $('#subtotal').html(json.subtotal);
+            $('#cart-subtotal').html(json.subtotal);
             for (let item in json.products){
-                document.getElementById("select-"+json.products[item]["productid"]).innerHTML = json.products[item]["productqty"];
-                document.getElementById("product-total-"+json.products[item]["productid"]).innerHTML = json.products[item]["productTotalPrice"];
+                $('#select-'+json.products[item]['productid']).html(json.products[item]["productqty"]);
+                $('#product-total-'+json.products[item]["productid"]).html(json.products[item]["productTotalPrice"]);
             };
         },
         error: function (xhr, errmsg, err) {}
@@ -515,8 +520,8 @@
                 action: 'post',
             },
         success: function (json) {
-            document.getElementById("basket-total-price").innerHTML = json.subtotal
-            document.getElementById("basket-qty").innerHTML = json.qty
+            $('#basket-total-price').html(json.subtotal);
+            $('#basket-qty').html(json.qty);
             location.href = "/cart/";
         },
         error: function (xhr, errmsg, err) {}

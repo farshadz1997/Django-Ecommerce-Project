@@ -148,8 +148,8 @@
                 action: 'post'
             },
             success: function (json) {
-                document.getElementById("basket-total-price").innerHTML = json.subtotal
-                document.getElementById("basket-qty").innerHTML = json.qty
+                $('#basket-total-price').html(json.subtotal)
+                $('#basket-qty').html(json.qty)
             },
             error: function (xhr, errmsg, err) {}
         });
