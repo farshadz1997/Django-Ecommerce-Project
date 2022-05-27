@@ -1,0 +1,34 @@
+{%extends 'base.html'%}
+{%load static%}
+{%load crispy_forms_tags%}
+{%block title%}Login{%endblock%}
+{%block content%}
+<form id="login-form-wrap" class="form-group" method="POST" align="center">
+    {%csrf_token%}
+    {% if form.errors %}
+        <div class="alert alert-primary" role="alert">
+            Error: Username or Password not correct!
+        </div>
+    {% endif %}
+    <p class="form-row form-row-first">
+        <label for="username">{{form.username.label}}<span class="required">*</span></label>
+        {{ form.username}}
+        {% comment %} <input type="text" id="username" name="username" class="input-text"> {% endcomment %}
+    </p>
+    <p class="form-row form-row-last">
+        <label for="password">{{form.password.label}}<span class="required">*</span></label>
+        {% comment %} <input type="password" id="password" name="password" class="input-text"> {% endcomment %}
+        {{ form.password}}
+    </p>
+    <div class="clear"></div>
+    {% comment %} {{form|crispy}} {% endcomment %}
+    <p class="form-row">
+        <input type="submit" value="Login" name="login" class="button">
+        <label class="inline" for="rememberme"><input type="checkbox" value="forever" id="rememberme" name="rememberme"> Remember me </label>
+    </p>
+    <p class="lost_password">
+        <a href="#">Lost your password?</a>
+    </p>
+    <div class="clear"></div>
+</form>
+{%endblock%}
