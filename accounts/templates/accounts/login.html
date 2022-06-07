@@ -10,6 +10,13 @@
             Error: Username or Password not correct!
         </div>
     {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{message}}
+            </div>
+        {% endfor %}
+    {%endif%}
     <p class="form-row form-row-first">
         <label for="username">{{form.username.label}}<span class="required">*</span></label>
         {{ form.username}}
@@ -27,7 +34,7 @@
         <label class="inline" for="rememberme"><input type="checkbox" value="forever" id="rememberme" name="rememberme"> Remember me </label>
     </p>
     <p class="lost_password">
-        <a href="#">Lost your password?</a>
+        <a href="{%url 'accounts:pwdreset'%}">Lost your password?</a>
     </p>
     <div class="clear"></div>
 </form>

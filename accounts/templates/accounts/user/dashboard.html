@@ -1,11 +1,23 @@
 {%extends 'base.html'%}
 {%load static%}
 {%block title%}Dashboard{%endblock title%}
+
+{%block menu%}
+{%include 'accounts/user/usermenu.html'%}
+{%endblock%}
+
 {%block content%}
 <main class="pt-5">
     <div class="container" style="max-width: 1000px">
       <div class="col-12">
         <h1 class="h2">Your Dashboard</h1>
+        {% if messages %}
+          {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">
+                  {{message|safe}}
+              </div>
+          {% endfor %}
+        {%endif%}
       </div>
       <div class="col-12 d-flex justify-content-between">
         <div>Manage your <b>orders</b> and personal details</div>

@@ -1,0 +1,46 @@
+{%extends 'base.html'%}
+{%load static%}
+{%load crispy_forms_tags%}
+
+{%block title%}{{title}}{%endblock%}
+
+{%block menu%}
+    {%if user.is_authenticated%}
+            {%include 'accounts/user/usermenu.html'%}
+    {%else%}
+            {%include 'mainmenu.html'%}
+    {%endif%}
+{%endblock%}
+
+{%block content%}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <br>
+            {%if 'done' in request.get_full_path%}
+            <h2>Password link sent to your email</h2>
+            {%else%}
+            <h2>{{title}}</h2>
+            {%endif%}
+            {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{form.errors}}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {%if 'done' not in request.get_full_path%}
+    <div class="row">
+        <div class="col-md-6">
+            <form method="post">
+                {%csrf_token%}
+                {{form|crispy}}
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">{{title}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {%endif%}
+</div>
+{%endblock%}

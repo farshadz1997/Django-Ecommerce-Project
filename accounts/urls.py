@@ -9,9 +9,17 @@ from .forms import PwdResetConfirmForm, PwdResetForm, UserLoginForm
 app_name = 'accounts'
 
 urlpatterns = [
-    path('login/', views.MyLoginView.as_view(), name='login'),
+    path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/accounts/login/'), name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('register/', views.account_register, name='register'),
     path('activate/<slug:uidb64>/<slug:token>)/', views.account_activate, name='activate'),
+    # Password reset
+    path('password-reset/', views.PasswordReset.as_view(), name='pwdreset'),
+    path('password-reset-done/', auth_views.PasswordResetDoneView.as_view(template_name='accounts/user/default_form.html'), name='pwdreset_done'),
+    path('password-reset-confirm/<uidb64>/<token>', views.PasswordResetConfirm.as_view(), name='pwdreset_confirm'),
+    # profile
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('change-password/', views.ChangePassword.as_view(), name='change_password'),
+    path('edit/', views.ChangeUserDetail.as_view(), name='edit_details'),
 ]
