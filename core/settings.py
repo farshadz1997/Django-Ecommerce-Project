@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'autoslug',
     'crispy_forms',
     'ckeditor',
+    'django_countries',
     'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.auth',

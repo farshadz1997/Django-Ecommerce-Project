@@ -11,9 +11,10 @@ from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.edit import FormView
+from django.views.generic import ListView, View, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
-from .forms import RegistrationForm, UserEditForm, UserLoginForm, PwdResetForm, PwdResetConfirmForm
+from .forms import RegistrationForm, UserEditForm, UserLoginForm, PwdResetForm, PwdResetConfirmForm, AddressForm
 from .models import UserBase
 from .tokens import account_activation_token
 
@@ -108,13 +109,40 @@ class ChangeUserDetail(SuccessMessageMixin, LoginRequiredMixin, FormView):
     
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        data = request.POST.copy()
         if form.is_valid():
             return self.form_valid(form)
         return self.form_invalid(form)
     
     def form_valid(self, form):
         user = form.save()
-        update_session_auth_hash(self.request, user)
         return super().form_valid(form)
+
+class DeleteUser(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        user = UserBase.objects.get(user_name=request.user)
+        user.is_active = False
+        user.save()
+        logout(request)
+        messages.success(request, 'Your account has been deleted successfully')
+        return redirect('accounts:login')
+
+class AddressView(SuccessMessageMixin, LoginRequiredMixin, FormView):
+    model = UserBase
+    form_class = AddressForm
+    success_message = "Address added successfully"
+    success_url = reverse_lazy('accounts:dashboard')
+    template_name = "accounts/user/address.html"
+    extra_context = {"title": "Address"}
     
+    def get_form(self, form_class=form_class):
+        return form_class(instance = self.request.user, **self.get_form_kwargs())
+    
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        return self.form_invalid(form)
+    
+    def form_valid(self, form):
+        user = form.save()
+        return super().form_valid(form)

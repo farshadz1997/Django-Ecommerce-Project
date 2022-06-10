@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import (AuthenticationForm, PasswordResetForm,
                                        SetPasswordForm)
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Row, Column, Field, Div, Button
+from django_countries.fields import CountryField
 
 from .models import UserBase
 
@@ -97,11 +100,11 @@ class UserEditForm(forms.ModelForm):
             attrs={'class': 'form-control mb-3', 'placeholder': 'email', 'id': 'form-email', 'readonly': 'readonly'}))
 
     user_name = forms.CharField(
-        label='Username', min_length=4, max_length=50, disabled=True, widget=forms.TextInput(
-            attrs={'class': 'form-control mb-3', 'placeholder': 'Username', 'id': 'form-username', 'readonly': 'readonly'}))
+        label='Username', min_length=4, max_length=50, widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3', 'placeholder': 'Username', 'id': 'form-username'}))
 
     first_name = forms.CharField(
-        label='First name', min_length=4, max_length=50, widget=forms.TextInput(
+        label='First name', min_length=3, max_length=50, widget=forms.TextInput(
             attrs={'class': 'form-control mb-3', 'placeholder': 'Firstname', 'id': 'form-firstname'}))
 
     class Meta:
@@ -112,4 +115,53 @@ class UserEditForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['user_name'].required = True
         self.fields['email'].required = True
-        
+      
+    def clean_user_name(self): 
+        user_name = self.cleaned_data['user_name'].lower()
+        characters = (' ', '/', '\'', '.', '@', '#', '$', '%', '^', '&', '*', '+', '=','`',
+                      '~', '!', '?', ':', ';', '<', '>', '{', '}', '|', '"', ',', "'", '-')
+        if any(char in user_name for char in characters):
+            raise forms.ValidationError(
+                "Username can not contain white space and special characters.")
+        if UserBase.objects.filter(user_name=user_name).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError(
+                "Please use another Username, that is already taken")
+        return user_name
+    
+class AddressForm(forms.ModelForm):
+    address_line_1 = forms.CharField(
+        label='Address',
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': '1234 Main St'})
+    )
+    address_line_2 = forms.CharField(
+        required=False, 
+        widget=forms.TextInput(attrs={'placeholder': 'Apartment, studio, or floor'})
+    )
+    country = CountryField(blank_label='(select country)').formfield()
+    town_city = forms.CharField(label='City', required=True)
+    state = forms.CharField(label='State', required=True)
+    postcode = forms.CharField(label='Zip', required=True)
+    phone_number = forms.IntegerField(label='Phone Number', required=True)
+
+    class Meta:
+        model = UserBase
+        fields = ('address_line_1', 'address_line_2', 'country', 'town_city', 'state', 'postcode', 'phone_number')
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field('address_line_1', css_class='form-group col-md-4'),
+            Field('address_line_2', css_class='form-group col-md-4'),
+            Row(
+                Column('country', css_class='form-select-lg mb-3'),
+                Column('town_city', css_class='form-group col-md-4 mb-0'),
+                Column('state', css_class='form-group col-md-4 mb-0'),
+            ),
+            Row(
+                Column('phone_number', css_class='form-group col-md-3 mb-0'),
+                Column('postcode', css_class='form-group col-md-3 mb-0'),
+            ),
+            Submit('submit', 'Submit', css_class='btn-outline-info')
+        )

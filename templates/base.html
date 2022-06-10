@@ -51,6 +51,7 @@
                             <li><a href="#"><i class="fa fa-heart"></i> Wishlist</a></li>
                             <li><a href="{%url 'basket:basket_summary'%}"><i class="fa fa-user"></i> My Cart</a></li>
                             <li><a href="checkout.html"><i class="fa fa-user"></i> Checkout</a></li>
+                            <li><a href="{%url 'accounts:logout'%}"><i class="glyphicon glyphicon-log-out"></i> Logout</a></li>
                             {%else%}
                             <li><a href="{%url 'accounts:register'%}"><i class="fa fa-user"></i> Sign up</a></li>
                             <li><a href="{%url 'accounts:login'%}"><i class="fa fa-user"></i> Login</a></li>

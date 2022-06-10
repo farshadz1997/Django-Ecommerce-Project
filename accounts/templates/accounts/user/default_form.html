@@ -17,14 +17,16 @@
     <div class="row">
         <div class="col-md-6">
             <br>
-            {%if 'done' in request.get_full_path%}
-            <h2>Password link sent to your email</h2>
+            {%if request.resolver_match.url_name == 'pwdreset_done'%}
+                <h2>Password link sent to your email</h2>
             {%else%}
-            <h2>{{title}}</h2>
+                <h2>{{title}}</h2>
             {%endif%}
             {% if form.errors %}
                 <div class="alert alert-danger" role="alert">
-                    {{form.errors}}
+                    {%for f in form.errors.values%}
+                        {{f}}
+                    {%endfor%}
                 </div>
             {% endif %}
         </div>
@@ -37,6 +39,9 @@
                 {{form|crispy}}
                 <div class="form-group">
                     <button class="btn btn-outline-info" type="submit">{{title}}</button>
+                    {%if request.resolver_match.url_name == 'edit_details'%}
+                        <a href="{%url 'accounts:delete_user'%}" class="btn btn-danger">Delete Account</a>
+                    {%endif%}
                 </div>
             </form>
         </div>

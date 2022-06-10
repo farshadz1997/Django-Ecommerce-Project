@@ -21,5 +21,7 @@ urlpatterns = [
     # profile
     path('dashboard/', views.dashboard, name='dashboard'),
     path('change-password/', views.ChangePassword.as_view(), name='change_password'),
-    path('edit/', views.ChangeUserDetail.as_view(), name='edit_details'),
+    path('details/', views.ChangeUserDetail.as_view(), name='edit_details'),
+    path('address/', views.AddressView.as_view(), name='address'),
+    path('delete-user/', views.DeleteUser.as_view(), name='delete_user'),
 ]

@@ -42,6 +42,7 @@ class UserBase(AbstractBaseUser, PermissionsMixin):
     address_line_1 = models.CharField(verbose_name='Address line 1', max_length=150, blank=True)
     address_line_2 = models.CharField(verbose_name='Address line 2', max_length=150, blank=True)
     town_city = models.CharField(verbose_name='Town/city', max_length=150, blank=True)
+    state = models.CharField(verbose_name='State', max_length=150, blank=True)
     # User status
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
