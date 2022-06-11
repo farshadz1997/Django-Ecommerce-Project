@@ -37,10 +37,11 @@
             <form method="post">
                 {%csrf_token%}
                 {{form|crispy}}
+                <br>
                 <div class="form-group">
-                    <button class="btn btn-outline-info" type="submit">{{title}}</button>
+                    <button class="btn-outline-info" type="submit">{{title}}</button>
                     {%if request.resolver_match.url_name == 'edit_details'%}
-                        <a href="{%url 'accounts:delete_user'%}" class="btn btn-danger">Delete Account</a>
+                        <a href="{%url 'accounts:delete_user'%}" class="btn btn-danger" style="padding: 10px 15px">Delete Account</a>
                     {%endif%}
                 </div>
             </form>

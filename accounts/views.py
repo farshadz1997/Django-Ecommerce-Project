@@ -144,5 +144,5 @@ class AddressView(SuccessMessageMixin, LoginRequiredMixin, FormView):
         return self.form_invalid(form)
     
     def form_valid(self, form):
-        user = form.save()
+        form.save()
         return super().form_valid(form)

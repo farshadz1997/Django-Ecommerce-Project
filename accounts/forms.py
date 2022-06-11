@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import (AuthenticationForm, PasswordResetForm,
                                        SetPasswordForm)
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Row, Column, Field, Div, Button
+from crispy_forms.layout import Layout, Submit, Row, Column, Field, Div, Button, HTML
 from django_countries.fields import CountryField
 
 from .models import UserBase
@@ -128,6 +128,7 @@ class UserEditForm(forms.ModelForm):
                 "Please use another Username, that is already taken")
         return user_name
     
+
 class AddressForm(forms.ModelForm):
     address_line_1 = forms.CharField(
         label='Address',
@@ -138,10 +139,10 @@ class AddressForm(forms.ModelForm):
         required=False, 
         widget=forms.TextInput(attrs={'placeholder': 'Apartment, studio, or floor'})
     )
-    country = CountryField(blank_label='(select country)').formfield()
+    country = CountryField(blank_label='(select country)').formfield(label='Country', required=True)
     town_city = forms.CharField(label='City', required=True)
     state = forms.CharField(label='State', required=True)
-    postcode = forms.CharField(label='Zip', required=True)
+    postcode = forms.CharField(label='Zipcode', required=True)
     phone_number = forms.IntegerField(label='Phone Number', required=True)
 
     class Meta:
@@ -152,16 +153,23 @@ class AddressForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Field('address_line_1', css_class='form-group col-md-4'),
-            Field('address_line_2', css_class='form-group col-md-4'),
-            Row(
-                Column('country', css_class='form-select-lg mb-3'),
-                Column('town_city', css_class='form-group col-md-4 mb-0'),
-                Column('state', css_class='form-group col-md-4 mb-0'),
+            Div(
+                Field('address_line_1', css_class='form-group col-md-4'),
+                Field('address_line_2', css_class='form-group col-md-4'),
+                Div(
+                    Field('country', css_class='form-control'),
+                    css_class = 'form-group',
+                ),
+                Row(
+                    Column('town_city', css_class='form-group col-md-4 mb-0'),
+                    Column('state', css_class='form-group col-md-4 mb-0'),
+                ),
+                Row(
+                    Column('phone_number', css_class='form-group col-md-4 mb-0'),
+                    Column('postcode', css_class='form-group col-sm-4 mb-0'),
+                ),
+                Submit('submit', 'Submit', css_class='btn-outline-info'),
+                HTML('<br>'),
+                css_class='col-12 col-lg-6 mx-auto'
             ),
-            Row(
-                Column('phone_number', css_class='form-group col-md-3 mb-0'),
-                Column('postcode', css_class='form-group col-md-3 mb-0'),
-            ),
-            Submit('submit', 'Submit', css_class='btn-outline-info')
         )

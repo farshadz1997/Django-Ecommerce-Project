@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'autoslug',
     'crispy_forms',
+    'crispy_bootstrap5',
     'ckeditor',
     'django_countries',
     'django.contrib.humanize',
@@ -158,7 +159,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # Basket session ID
 BASKET_SESSION_ID = 'basket'
