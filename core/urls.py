@@ -20,10 +20,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('home.urls')),
-    path('cart/', include('basket.urls')),
-    path('products/', include('Products.urls')),
+    path('', include('home.urls', namespace='home')),
+    path('cart/', include('basket.urls', namespace='basket')),
+    path('products/', include('Products.urls', namespace='Products')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
+    path('payment/', include('payment.urls', namespace='payment')),
+    path('orders/', include('orders.urls', namespace='orders')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

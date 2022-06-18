@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-(q)cct#n@s%lnjnq9hxu(_87n(1%3pfmldacvf5$=wt*x(t6f^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'Products',
     'basket',
     'accounts',
+    'payment',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -171,6 +173,9 @@ LOGIN_URL = 'accounts:login'
 
 # Email setting
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# stripe listen --forward-to localhost:8000/payment/webhook
+STRIPE_ENDPOINT_SECRET = 'whsec_e524b8f7684faf6f14d4d8e1c49093149758f40b5146da7f6179605322f0696e'
 
 # Ckeditor config
 CKEDITOR_CONFIGS = {
