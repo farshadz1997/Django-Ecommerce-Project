@@ -32,17 +32,18 @@ class CustomAccountManager(BaseUserManager):
     
 class UserBase(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('Email address'), unique=True)
-    user_name = models.CharField(verbose_name='User name', max_length=150, unique=True)
-    first_name = models.CharField(verbose_name='First name', max_length=150, blank=True)
+    user_name = models.CharField(_('User name'), max_length=150, unique=True)
+    first_name = models.CharField(_('First name'), max_length=150, blank=True)
+    last_name = models.CharField(_('Last name'), max_length=150, blank=True)
     about = models.TextField(_('About'), max_length=500, blank=True)
     # Delivery details
     country = CountryField()
-    phone_number= models.CharField(verbose_name='Phone number', max_length=15, blank=True)
-    postcode = models.CharField(verbose_name='Postal code', max_length=15, blank=True)
-    address_line_1 = models.CharField(verbose_name='Address line 1', max_length=150, blank=True)
-    address_line_2 = models.CharField(verbose_name='Address line 2', max_length=150, blank=True)
-    town_city = models.CharField(verbose_name='Town/city', max_length=150, blank=True)
-    state = models.CharField(verbose_name='State', max_length=150, blank=True)
+    phone_number= models.CharField('Phone number', max_length=15, blank=True)
+    postcode = models.CharField('Postal code', max_length=15, blank=True)
+    address_line_1 = models.CharField(_('Address line 1'), max_length=150, blank=True)
+    address_line_2 = models.CharField(_('Address line 2'), max_length=150, blank=True)
+    town_city = models.CharField(_('Town/city'), max_length=150, blank=True)
+    state = models.CharField(_('State'), max_length=150, blank=True)
     # User status
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
