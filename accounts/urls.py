@@ -16,7 +16,7 @@ urlpatterns = [
     path('activate/<slug:uidb64>/<slug:token>)/', views.account_activate, name='activate'),
     # Password reset
     path('password-reset/', views.PasswordReset.as_view(), name='pwdreset'),
-    path('password-reset-done/', auth_views.PasswordResetDoneView.as_view(template_name='accounts/user/default_form.html'), name='pwdreset_done'),
+    path('password-reset-done/', auth_views.PasswordResetDoneView.as_view(template_name='accounts/user/password_reset_done.html'), name='pwdreset_done'),
     path('password-reset-confirm/<uidb64>/<token>', views.PasswordResetConfirm.as_view(), name='pwdreset_confirm'),
     # profile
     path('dashboard/', views.dashboard, name='dashboard'),

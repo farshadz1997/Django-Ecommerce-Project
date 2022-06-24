@@ -49,12 +49,12 @@
                             {%if user.is_authenticated%}
                             <li><a href="{%url 'accounts:dashboard'%}"><i class="fa fa-user"></i> {{user.user_name}}</a></li>
                             <li><a href="#"><i class="fa fa-heart"></i> Wishlist</a></li>
-                            <li><a href="{%url 'basket:basket_summary'%}"><i class="fa fa-user"></i> My Cart</a></li>
-                            <li><a href="checkout.html"><i class="fa fa-user"></i> Checkout</a></li>
+                            <li><a href="{%url 'basket:basket_summary'%}"><i class="fa fa-shopping-cart"></i> My Cart</a></li>
                             <li><a href="{%url 'accounts:logout'%}"><i class="glyphicon glyphicon-log-out"></i> Logout</a></li>
                             {%else%}
                             <li><a href="{%url 'accounts:register'%}"><i class="fa fa-user"></i> Sign up</a></li>
                             <li><a href="{%url 'accounts:login'%}"><i class="fa fa-user"></i> Login</a></li>
+                            <li><a href="{%url 'basket:basket_summary'%}"><i class="fa fa-shopping-cart"></i> My Cart</a></li>
                             {%endif%}
                         </ul>
                     </div>
@@ -64,7 +64,7 @@
                     <div class="header-right">
                         <ul class="list-unstyled list-inline">
                             <li class="dropdown dropdown-small">
-                                <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><span class="key">currency :</span><span class="value">USD </span><b class="caret"></b></a>
+                                <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><span class="key">Currency :</span><span class="value">USD </span><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#">USD</a></li>
                                     <li><a href="#">INR</a></li>
@@ -73,7 +73,7 @@
                             </li>
 
                             <li class="dropdown dropdown-small">
-                                <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><span class="key">language :</span><span class="value">English </span><b class="caret"></b></a>
+                                <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" href="#"><span class="key">Language :</span><span class="value">English </span><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#">English</a></li>
                                     <li><a href="#">French</a></li>

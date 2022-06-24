@@ -14,7 +14,7 @@ from django.views.generic.edit import FormView
 from django.views.generic import ListView, View, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
-from .forms import RegistrationForm, UserEditForm, UserLoginForm, PwdResetForm, PwdResetConfirmForm, AddressForm
+from .forms import RegistrationForm, UserEditForm, UserLoginForm, PwdResetForm, PwdResetConfirmForm, AddressForm, ChangePasswordForm
 from .models import UserBase
 from .tokens import account_activation_token
 
@@ -52,7 +52,7 @@ def account_register(request):
             })
             user.email_user(subject=subject, message=message)
             messages.success(request, 'Your account has been created! Activation email sent to your email.')
-            return HttpResponseRedirect(reverse('accounts:login'))
+            return redirect('accounts:login')
     else:
         registerForm = RegistrationForm()
     return render(request, 'accounts/register.html', {'form': registerForm})
@@ -69,7 +69,8 @@ def account_activate(request, uidb64, token):
         messages.success(request, 'Your account has been activated! You can now login.')
         return redirect('accounts:dashboard')
     else:
-        return render(request, 'accounts/activation_invalid.html')
+        messages.error(request, 'Activation link is invalid!')
+        return redirect('accounts:login')
     
 class PasswordReset(auth_views.PasswordResetView):
     # url name: pwdreset
@@ -80,7 +81,7 @@ class PasswordReset(auth_views.PasswordResetView):
     
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return HttpResponseRedirect(reverse('accounts:dashboard'))
+            return redirect('accounts:dashboard')
         return super().dispatch(request, *args, **kwargs)
     
 class PasswordResetConfirm(SuccessMessageMixin, auth_views.PasswordResetConfirmView):
@@ -88,13 +89,14 @@ class PasswordResetConfirm(SuccessMessageMixin, auth_views.PasswordResetConfirmV
     template_name = 'accounts/user/default_form.html'
     success_url = reverse_lazy('accounts:login')
     form_class = PwdResetConfirmForm
-    success_message = "Your password changed successfully, you may login now."
+    success_message = 'Your password changed successfully, you may login now.'
 
 class ChangePassword(LoginRequiredMixin, SuccessMessageMixin, auth_views.PasswordChangeView):
     # url name: change_password
     template_name = 'accounts/user/default_form.html'
     success_url = reverse_lazy('accounts:dashboard')
-    success_message = "Password changed successfully"
+    success_message = 'Password changed successfully'
+    form_class = ChangePasswordForm
     
 class ChangeUserDetail(SuccessMessageMixin, LoginRequiredMixin, FormView):
     # url name: edit_details
@@ -124,14 +126,14 @@ class DeleteUser(LoginRequiredMixin, View):
         user.save()
         logout(request)
         messages.success(request, 'Your account has been deleted successfully')
-        return redirect('accounts:login')
+        return redirect('accounts:login', permanent=True)
 
 class AddressView(SuccessMessageMixin, LoginRequiredMixin, FormView):
     model = UserBase
     form_class = AddressForm
     success_message = "Address added successfully"
     success_url = reverse_lazy('accounts:dashboard')
-    template_name = "accounts/user/address.html"
+    template_name = "accounts/user/default_form.html"
     extra_context = {"title": "Address"}
     
     def get_form(self, form_class=form_class):
