@@ -199,16 +199,10 @@ class UserEditForm(forms.ModelForm):
 
 
 class ChangePasswordForm(PasswordChangeForm):
-    old_password = forms.CharField(
-        label='Old password', widget=forms.PasswordInput(
-            attrs={'id': 'form-oldpass'}))
-    new_password1 = forms.CharField(
-        label='New password', widget=forms.PasswordInput(
-            attrs={'id': 'form-newpass'}))
-    new_password2 = forms.CharField(
-        label='Repeat password', widget=forms.PasswordInput(
-            attrs={'placeholder': 'New Password confirmation', 'id': 'form-new-pass2'}))
-
+    
+    class Meta:
+        fields = ('old_password', 'new_password1', 'new_password2')
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
