@@ -1,8 +1,10 @@
 from decimal import Decimal
-from Products.models import Product
-from django.conf import settings
 
-class Basket():
+from django.conf import settings
+from Products.models import Product
+
+
+class Basket:
     """
     A base Basket class, providing some default behaviors that
     can be inherited or overrided, as necessary.
@@ -22,9 +24,9 @@ class Basket():
         product_id = str(product.id)
 
         if product_id in self.basket:
-            self.basket[product_id]['qty'] = qty
+            self.basket[product_id]["qty"] = qty
         else:
-            self.basket[product_id] = {'price': str(product.price), 'qty': qty}
+            self.basket[product_id] = {"price": str(product.final_price), "qty": qty}
 
         self.save()
 
@@ -38,18 +40,18 @@ class Basket():
         basket = self.basket.copy()
 
         for product in products:
-            basket[str(product.id)]['product'] = product
+            basket[str(product.id)]["product"] = product
 
         for item in basket.values():
-            item['price'] = Decimal(item['price'])
-            item['total_price'] = item['price'] * item['qty']
+            item["price"] = Decimal(item["price"])
+            item["total_price"] = item["price"] * item["qty"]
             yield item
 
     def __len__(self):
         """
         Get the basket data and count the qty of items
         """
-        return sum(item['qty'] for item in self.basket.values())
+        return sum(item["qty"] for item in self.basket.values())
 
     def update(self, product, qty):
         """
@@ -57,11 +59,11 @@ class Basket():
         """
         product_id = str(product)
         if product_id in self.basket:
-            self.basket[product_id]['qty'] = qty
+            self.basket[product_id]["qty"] = qty
         self.save()
 
     def get_total_price(self):
-        return sum(Decimal(item['price']) * item['qty'] for item in self.basket.values())
+        return sum(Decimal(item["price"]) * item["qty"] for item in self.basket.values())
 
     def delete(self, product):
         """
@@ -71,19 +73,15 @@ class Basket():
 
         if product_id in self.basket:
             del self.basket[product_id]
-            print(product_id)
             self.save()
 
     def save(self):
         self.session.modified = True
-        
+
     def clear(self):
         # Remove basket from session
         del self.session[settings.BASKET_SESSION_ID]
         self.save()
-
-
-
 
 
 """ 
