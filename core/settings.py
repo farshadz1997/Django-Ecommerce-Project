@@ -75,11 +75,12 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'Products.context_processors.categories',
+                'Products.context_processors.products',
                 'basket.context_processors.basket',
             ],
             'builtins': [
                 'Products.templatetags.product_tags',
+                'accounts.templatetags.accounts_tags',
             ]
         },
     },
@@ -174,8 +175,18 @@ LOGIN_URL = 'accounts:login'
 # Email setting
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# stripe listen --forward-to localhost:8000/payment/webhook
-STRIPE_ENDPOINT_SECRET = 'whsec_e524b8f7684faf6f14d4d8e1c49093149758f40b5146da7f6179605322f0696e'
+# Stripe setting
+from decouple import config
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
+# stripe listen --forward-to localhost:8000/payment/webhook/
+STRIPE_ENDPOINT_SECRET = config('STRIPE_ENDPOINT_SECRET')
+
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
 
 # Ckeditor config
 CKEDITOR_CONFIGS = {

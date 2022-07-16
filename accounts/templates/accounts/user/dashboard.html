@@ -2,93 +2,103 @@
 {%load static%}
 {%block title%}Dashboard{%endblock title%}
 
-{%block menu%}
-{%include 'accounts/user/usermenu.html'%}
-{%endblock%}
-
 {%block content%}
 <main class="pt-5">
-    <div class="container" style="max-width: 1000px">
-      <div class="col-12">
-        <h1 class="h2">Your Dashboard</h1>
-        {% if messages %}
-          {% for message in messages %}
-              <div class="alert alert-{{ message.tags }}">
-                  {{message|safe}}
-              </div>
-          {% endfor %}
-        {%endif%}
+  <div class="container">
+    <div class="col-12">
+      <h1 class="h1">Dashboard</h1>
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{message|safe}}
       </div>
-      <div class="col-12 d-flex justify-content-between">
-        <div>Manage your <b>orders</b> and personal details</div>
-        <div><a href="details">Change Details</a></div>
-      </div>
-      <hr />
-    </div>
-    <div class="container" style="max-width: 1000px">
-      {% comment %} {% for order in orders %} {% endcomment %}
-      <div class="row g-3">
-        
-        <div class="col-12 bg-light p-3 d-flex justify-content-between">
-          <div class="d-flex d-flex-inline">
-  
-            <div class="pe-3">2022-05-26</div>
-            <div class="dropdown">
-            <a class="text-reset text-decoration-none dropdown-toggle" href="#" role="link" id="dropdownLink" data-toggle="dropdown" aria-expanded="false">
-            Dispacted to 
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+      {% endfor %}
+      {%endif%}
+      <hr class="my-4"></hr>
+      <!--View account and edit -->
+      <div class="col-md-3">
+        <div class="panel panel-default">
+          <h4 class="panel-heading" align="center">Account & Edit</h4>
+          <div class="panel-body p-y-1" align="center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-badge" viewBox="0 0 16 16">
+              <path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+              <path d="M4.5 0A2.5 2.5 0 0 0 2 2.5V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2.5A2.5 2.5 0 0 0 11.5 0h-7zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v10.795a4.2 4.2 0 0 0-.776-.492C11.392 12.387 10.063 12 8 12s-3.392.387-4.224.803a4.2 4.2 0 0 0-.776.492V2.5z"/>
             </svg>
-            </a>
-  
-            <ul class="dropdown-menu" aria-labelledby="dropdownLink">
-              <li class="item small">product1</li>
-              <li class="item small">address 1</li>
-              <li class="item small">address 2</li>
-              <li class="item small">postal code</li>
-            </ul>
-            </div>
-  
           </div>
-          <div class="text-end">
-            Total paid: <span class="fw-bold">$600</span>
+          <div class="panel-body p-y-1" align="center">
+            <p>View and edit your profile.</p>
+          </div>
+          <div class="panel-footer">
+            <form action="{%url 'accounts:edit_details'%}">
+              <button class="btn-outline-info btn-block" type="submit">Edit profile</button>
+            </form>
           </div>
         </div>
-        <div class="col-md-5 col-lg-4 order-md-last p-0 order-3">
-          <div class="d-grid gap-2 ">
-            <button class="btn btn-warning" type="button">Problem with order</button>
-            <button class="btn btn-light" type="button">Leave a review</button>
-          </div>
-        </div>
-  
-        <div class="col-md-7 col-lg-8 p-0">
-  
-          {% comment %} {% for item in order.items.all %} {% endcomment %}
-  
-          <div class="card mb-3 border-0">
-            <div class="row g-0">
-              <div class="col-md-2 d-none d-md-block">
-                <img class="img-fluid" style="width:90px" src="#" />
-              </div>
-              <div class="col-md-10">
-                <div class="card-body p-1">
-                  <a class="text-decoration-none" href="#">
-                    <p class="card-text small">porduct title</p>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          
-          {% comment %} {% endfor %} {% endcomment %}
-  
-  
-        </div>
-  
       </div>
-      {% comment %} {% endfor %} {% endcomment %}
-  
+      <!--change password-->
+      <div class="col-md-3">
+        <div class="panel panel-default">
+          <h4 class="panel-heading" align="center">Security</h4>
+          <div class="panel-body p-y-1" align="center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
+              <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8zm4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5z"/>
+              <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+              <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+            </svg>
+          </div>
+          <div class="panel-body p-y-1" align="center">
+            <p>Set new password for your account.</p>
+          </div>
+          <div class="panel-footer">
+            <form action="{%url 'accounts:change_password'%}">
+              <button class="btn-outline-info btn-block" type="submit">Change password</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!--Addresses-->
+      <div class="col-md-3">
+        <div class="panel panel-default">
+          <h4 class="panel-heading" align="center">Addresses</h4>
+          <div class="panel-body p-y-1" align="center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+              <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/>
+            </svg>
+          </div>
+          <div class="panel-body p-y-1" align="center">
+            <p>Manage your addresses</p>
+          </div>
+          <div class="panel-footer">
+            <form action="{%url 'accounts:addresses'%}">
+              <button class="btn-outline-info btn-block" type="submit">View Addresses</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!--Orders-->
+      <div class="col-md-3">
+        <div class="panel panel-default">
+          <h4 class="panel-heading" align="center">Orders</h4>
+          <div class="panel-body p-y-1" align="center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-cart-check" viewBox="0 0 16 16">
+              <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+              <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg>
+          </div>
+          <div class="panel-body" align="center">
+            <p>View and track your orders</p>
+          </div>
+          <div class="panel-footer">
+            <form action="{%url 'accounts:orders'%}">
+              <button class="btn-outline-info btn-block" type="submit">View orders</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </main>
 {%endblock content%}

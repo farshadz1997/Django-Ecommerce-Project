@@ -4,20 +4,13 @@
 
 {%block title%}{{title}}{%endblock%}
 
-{%block menu%}
-    {%if user.is_authenticated%}
-            {%include 'accounts/user/usermenu.html'%}
-    {%else%}
-            {%include 'mainmenu.html'%}
-    {%endif%}
-{%endblock%}
-
 {%block content%}
 <div class="container">
     <div class="row">
         <div class="col-md-6">
             <br>
-            <h2>{{title}}</h2>
+            <h2 class="h2">{{title}}</h2>
+            <h4 class="h4">Return to the <a href="{%url 'accounts:dashboard'%}">dashboard</a></h4>
             <hr class="my-4"></hr>
             {%if form.errors%}
                 <div class="alert alert-danger" role="alert">

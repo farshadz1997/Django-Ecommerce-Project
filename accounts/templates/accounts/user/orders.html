@@ -1,0 +1,85 @@
+{%extends 'base.html'%}
+{%load accounts_tags%}
+{%block title%}Orders{%endblock%}
+
+{%block content%}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <br>
+            <h1>Orders</h1>
+            <h4 class="h4">Return to the <a href="{%url 'accounts:dashboard'%}">dashboard</a></h4>
+            <hr class="my-4">
+            </hr>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{message|safe}}
+            </div>
+            {% endfor %}
+            {%endif%}
+            {% for order in orders %}
+            {%if forloop.first%}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>QTY</th>
+                        <th>Total</th>
+                        <th>Delivered to</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {%endif%}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.created|date:"Y-m-d" }}</td>
+                        <td>{{ order.items_qty }}</td>
+                        <td>${{ order.total_paid }}</td>
+                        <td>{{order.address_line_1}}, {{order.city}}, {{order.state}}, {{order.postcode}}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="collapse"
+                                data-target="#collapseOrderHead{{order.id}},#collapseOrderBody{{order.id}}">
+                                Show items
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="collapse" id="collapseOrderHead{{order.id}}">
+                        <th>Image</th>
+                        <th>Product</th>
+                        <th>QTY</th>
+                        <th>Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                    <tbody class="collapse" id="collapseOrderBody{{order.id}}">
+                    {% for item in order.items.all %}
+                        <tr>
+                            {%with img=item.product.get_featured_image%}
+                                <td><img src="{{ img.image.url }}" alt="{{ img.alt_text }}"
+                                class="img-thumbnail" style="width: 75px; height: 75px"></td>
+                            {%endwith%}
+                            <td><a href="{{item.product.get_absolute_url}}">{{ item.product.title }}</a></td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ item.price }}</td>
+                            <td>${%total_item_price item.quantity item.price%}</td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    {% empty %}
+                    <div class="alert alert-info">
+                        You have no order.
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{%endblock content%}

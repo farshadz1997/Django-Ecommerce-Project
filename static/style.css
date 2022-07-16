@@ -193,8 +193,10 @@ z-index: 999;}
 	transition: all 0.45s ease;
 }
 .block-slider img{
-	width: 100%;
-	height: auto;
+	/* width: 100%;
+	height: auto; */
+    width: 1163px;
+    height: 600px;
 }
 .block-slider .bx-prev{
 	left: 0px;
@@ -384,6 +386,20 @@ z-index: 999;}
 .product-f-image {
     position: relative;
 }
+
+.product-f-image img {
+    width: 212px;
+    height: 269px;
+    max-width: 300px;
+    max-height: 282px;
+}
+
+.product-f-image-related img {
+    width: 237px;
+    max-width: 350px;
+    height: 295px;
+    max-height: 436px;
+}
 .product-hover {
     height: 100%;
     left: 0;
@@ -526,7 +542,6 @@ z-index: 999;}
 .product-wid-price ins {
     color: #5a88ca;
     font-weight: 700;
-    margin-right: 10px;
     text-decoration: none;
 }
 .single-wid-product h2 a {
@@ -736,7 +751,7 @@ input[type="submit"]:hover, button[type=submit]:hover {background-color: #222}
 }
 .recent-thumb {
     float: left;
-    height: auto;
+    height: 63px;
     margin-right: 15px;
     width: 63px;
 }
@@ -784,15 +799,22 @@ input[type="submit"]:hover, button[type=submit]:hover {background-color: #222}
 .product-main-img {
     margin-bottom: 20px;
 }
+.product-main-img img {
+    width: 400px;
+    height: auto;
+    max-height: 500px;
+}
 .product-gallery {
     margin-bottom: 25px;
     margin-left: -15px;
     overflow: hidden;
 }
 .product-gallery img {
-    height: auto;
-    margin-left: 15px;
     width: 76px;
+    height: 76px;
+    /* max-width: 76px; */
+    /* max-height: 76px; */
+    margin-left: 15px;
 }
 .product-name {
     font-size: 25px;
@@ -1007,7 +1029,7 @@ div.cart-collaterals ul.products li.product .price {
 div.cart-collaterals ul.products li.product .price ins {
     color: #5a88ca;
     font-weight: 700;
-    margin-left: 10px;
+    /* margin-left: 10px; */
     text-decoration: none;
 }
 
@@ -1127,4 +1149,46 @@ div.cart-collaterals ul.products li.product:hover .add_to_cart_button{background
 
 .pagination > li > a, .pagination > li > span {
   color: #5a88ca;
+}
+
+.wishlist-button {
+    background-color: white;
+    color: black;
+    border: 2px solid #ffc444;
+    padding: 6px 25px;
+    display: inline-block;
+    border-radius: 4px;
+}
+
+.wishlist-button:hover {
+    background-color: #ffc444;
+    color: white;
+}
+
+span.on-sale {
+    color: red;
+    padding: 6px 6px;
+    font-weight: bold;
+    border-radius: 15%
+}
+
+img.wp-post-image {
+    width: 160px;
+    height: 199px;
+    max-width: 160px;
+    max-height: 199px;
+}
+
+.product-upper img{
+    width: 195px;
+    height: 243px;
+}
+
+.low-in-stock {
+    color: orangered;
+}
+
+.out-of-stock {
+    color: gray;
+    font-weight: bold;
 }

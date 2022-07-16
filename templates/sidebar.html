@@ -10,17 +10,20 @@
     </div>
     
     <!--Recent products-->
+    {%with recents=recent_products%}
     <div class="single-sidebar">
         <h2 class="sidebar-title">Products</h2>
-        {%for recent_product in recent_products%}
+        {%for recent_product in recents%}
             <div class="thubmnail-recent">
-                <img src="{{recent_product.main_picture|thumbnail_url:'detail_recent_product'}}" class="recent-thumb" alt="{{recent_product.title}}">
+                {%with img=recent_product.get_featured_image%}
+                    <img src="{{img.image.url}}" class="recent-thumb" alt="{{img.alt_text}}">
+                {%endwith%}
                 <h2><a href="{{recent_product.get_absolute_url}}">{{recent_product.title}}</a></h2>
                 <div class="product-sidebar-price">
                     {%if recent_product.discount != None%}
-                        <ins>${{recent_product.get_discount_price}}</ins><del>${{recent_product.price}}</del>
+                        <ins>${{recent_product.final_price}}</ins><span class="on-sale">{{recent_product.discount}}% Off </span><del> ${{recent_product.regular_price}}</del>
                     {%else%}
-                        <ins>${{recent_product.price}}</ins>
+                        <ins>${{recent_product.final_price}}</ins>
                     {%endif%}
                 </div>                             
             </div>
@@ -29,13 +32,12 @@
     
     <!--Recent posts-->
     <div class="single-sidebar">
-        <h2 class="sidebar-title">Recent Posts</h2>
+        <h2 class="sidebar-title">Recent Products</h2>
         <ul>
-            <li><a href="">Sony Smart TV - 2015</a></li>
-            <li><a href="">Sony Smart TV - 2015</a></li>
-            <li><a href="">Sony Smart TV - 2015</a></li>
-            <li><a href="">Sony Smart TV - 2015</a></li>
-            <li><a href="">Sony Smart TV - 2015</a></li>
+            {%for recent in recents%}
+            <li><a href="{{recent.get_absolute_url}}">{{recent.title}}</a></li>
+            {%endfor%}
         </ul>
     </div>
+    {%endwith%}
 </div>

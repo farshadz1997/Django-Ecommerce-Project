@@ -1,44 +1,7 @@
 {%extends 'base.html'%}
-{%load static%}
 {%load crispy_forms_tags%}
 {%block title%}Login{%endblock%}
 {%block content%}
-{% comment %} <form id="login-form-wrap" class="form-group" method="POST" align="center"> {% endcomment %}
-    {% comment %} {%csrf_token%}
-    {% if form.errors %}
-    <div class="col-md-12">
-        <div class="alert alert-danger" role="alert">
-            Error: Invalid Username or Password.
-        </div>
-    </div>
-    {% endif %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{message}}
-            </div>
-        {% endfor %}
-    {%endif%}
-    <p class="form-row form-row-first">
-        <label for="username">{{form.username.label}}<span class="required">*</span></label>
-        {{ form.username}}
-    </p>
-    <p class="form-row form-row-last">
-        <label for="password">{{form.password.label}}<span class="required">*</span></label>
-        {{ form.password}}
-    </p>
-    <div class="clear"></div>
-    <p class="form-row">
-        <input type="submit" value="Login" name="login" class="button">
-        <label class="inline" for="rememberme"><input type="checkbox" value="forever" id="rememberme" name="rememberme"> Remember me </label>
-    </p>
-    <p class="lost_password">
-        <a href="{%url 'accounts:pwdreset'%}">Lost your password?</a>
-    </p>
-    <div class="clear"></div>
-</form> {% endcomment %}
-
-
 <div class="container">
     <div class="row">
         <div class="col-md-12">

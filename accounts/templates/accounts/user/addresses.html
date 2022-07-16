@@ -1,0 +1,59 @@
+{%extends 'base.html'%}
+{%block title%}Addresses{%endblock%}
+
+{%block content%}
+<main class="pt-5">
+    <div class="container">
+        <div class="col-12">
+            <h2 class="h2">Addresses</h2>
+            <h4 class="h4">Return to the <a href="{%url 'accounts:dashboard'%}">dashboard</a></h4>
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{message|safe}}
+            </div>
+            {% endfor %}
+            {%endif%}
+            <hr class="my-4">
+            </hr>
+            {%if addresses.count < 4%}
+            <form action="{%url 'accounts:add_address'%}" class="form-group">
+                <button type="submit" class="btn-outline-info">Add Address</button>
+            </form>
+            {%endif%}
+            {%for address in addresses%}
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <h4 class="panel-heading" align="center">Address #{{forloop.counter}}</h4>
+                    <div class="panel-body p-y-1" align="center">
+                        <p>{{address.first_name}} {{address.last_name}}</p>
+                        <p>{{address.address_line_1|slice:35}}</p>
+                        <p>{{address.city}}, {{address.state}}, {{address.postcode}}</p>
+                        <p>{{address.country}}</p>
+                        <p>{{address.phone}}</p>
+                    </div>
+                    {%if not address.default%}
+                    <a href="{% url 'accounts:set_default_address' address.pk %}" class="text-decoration-none">Set Default</a>
+                    {%else%}
+                    <br>
+                    {%endif%}
+                    <div class="panel-footer">
+                        <form action="{%url 'accounts:update_address' address.pk%}">
+                            <button class="btn-outline-info btn-block" type="submit">Edit Address</button>
+                        </form>
+                        <form action="{%url 'accounts:delete_address' address.pk%}" method="POST">
+                            {%csrf_token%}
+                            <button class="btn btn-danger btn-block" onclick="form.submit()" style="margin-top: 5px">DELETE ADDRESS</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {%empty%}
+            <div class="alert alert-info">
+                You have no addresses.
+            </div>
+            {%endfor%}
+        </div>
+    </div>
+</main>
+{%endblock content%}
