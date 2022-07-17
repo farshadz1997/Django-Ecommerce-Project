@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="product-bit-title text-center">
-                        <h2>Shop</h2>
+                        <h2>{{banner_title}}</h2>
                     </div>
                 </div>
             </div>
@@ -29,41 +29,73 @@
                         <div class="product-breadcroumb">
                             <a href="{% url 'home:index'%}">Home</a>
                             <a href="{{product.category.get_absolute_url}}">{{product.category}}</a>
-                            <a href="">{{product.title}}</a>
+                            <a href="{{product.get_absolute_url}}">{{product.title}}</a>
                         </div>
                         
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="product-images">
                                     <div class="product-main-img">
-                                        <img src="{{product.main_picture|thumbnail_url:'product_list'}}" alt="">
+                                        {%with img=product.get_featured_image%}
+                                        <img src={{img.image.url}} alt="{{img.alt_text}}">
+                                        {%endwith%}
                                     </div>
                                     
                                     <div class="product-gallery">
-                                        {%if product.picture_2%}<img src="{{product.picture_2|thumbnail_url:'detail_other_pics'}}" alt="">{%endif%}
-                                        {%if product.picture_3%}<img src="{{product.picture_3|thumbnail_url:'detail_other_pics'}}" alt="">{%endif%}
-                                        {%if product.picture_4%}<img src="{{product.picture_4|thumbnail_url:'detail_other_pics'}}" alt="">{%endif%}
+                                        {%for image in product.images.all%}
+                                        {%if not image.is_feature%}
+                                        <img src={{image.image.url}} alt="{{image.alt_text}}">
+                                        {%endif%}
+                                        {%endfor%}
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="col-sm-6">
+                                <div id="errors" class=""></div>
+                                {% if messages %}
+                                {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{message|safe}}
+                                </div>
+                                {% endfor %}
+                                {%endif%}
                                 <div class="product-inner">
                                     <h2 class="product-name">{{product.title}}</h2>
+                                    {%if product.quantity < 10 and product.quantity > 0%}
+                                    <h4 class="low-in-stock"> Only {{product.quantity}} left in stock</h4>
+                                    {%endif%}
+                                    {%if product.in_stock %}
                                     <div class="product-inner-price">
                                         {%if product.discount != None%}
-                                            <ins>${{product.get_discount_price}}</ins><del>${{product.price}}</del>
+                                            <ins>${{product.final_price}}</ins><span class="on-sale">{{product.discount}}% Off </span><del>${{product.regular_price}}</del>
                                         {%else%}
-                                            <ins>${{product.price}}</ins>
+                                            <ins>${{product.final_price}}</ins>
                                         {%endif%}
-                                    </div>    
+                                    </div>
+                                    {%endif%}
+                                    {%if request.user.is_authenticated%}
+                                        <form action="{%url 'accounts:add-remove-wishlist' product.id%}">
+                                            {%if product in request.user.user_wishlist.all%}
+                                            <button class="wishlist-button" type="button" onclick="form.submit()">Remove from wishlist</button>
+                                            {%else%}
+                                            <button class="wishlist-button" type="button" onclick="form.submit()" style="width:183px">Add to wishlist</button>
+                                            {%endif%}
+                                        </form>
+                                        <br>
+                                    {%endif%}    
                                     
-                                    <form action="" class="cart">
+                                    {%if product.in_stock%}
+                                    <div class="cart">
                                         <div class="quantity">
-                                            <input type="number" id="select" size="4" class="input-text qty text" title="Qty" value={% get_num_of_product %} name="quantity" min="1" step="1">
+                                            <input type="number" id="select" size="4" class="input-text qty text" title="Qty"
+                                             value={% get_num_of_product %} name="quantity" min="1" max={%if product.quantity > 10%}"10"{%else%}"{{product.quantity}}"{%endif%} step="1">
                                         </div>
                                         <button class="add_to_cart_button" id="add-button" type="button" value={{product.id}}>Add to cart</button>
-                                    </form>   
+                                    </div>
+                                    {%else%}
+                                    <h4 class="out-of-stock">---Out of stock---</h4> 
+                                    {%endif%}  
                                     
                                     <div class="product-inner-category">
                                         <p>Category: <a href="{{product.category.get_absolute_url}}">{{product.category}}</a>
@@ -112,21 +144,27 @@
                                 {%for related_product in related_products%}
                                     <div class="single-product">
                                         <div class="product-f-image">
-                                            <img src="{{related_product.main_picture|thumbnail_url:'detail_related_product'}}" alt="{{related_product.title}}">
+                                            <div class="product-f-image-related">
+                                                {%with img=related_product.get_featured_image%}
+                                                <img src="{{img.image.url}}" alt="{{img.alt_text}}">
+                                                {%endwith%}
+                                            </div>
                                             <div class="product-hover">
-                                                <a href="" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                                <a href="" class="add-to-cart-link" data-product_id="{{related_product.id}}"><i class="fa fa-shopping-cart"></i> Add to cart</a>
                                                 <a href="{{related_product.get_absolute_url}}" class="view-details-link"><i class="fa fa-link"></i> See details</a>
                                             </div>
                                         </div>
                                         <h2><a href="{{related_product.get_absolute_url}}">{{related_product.title}}</a></h2>
                                         <div class="product-carousel-price">
-                                            {%if product.discount != None%}
-                                                <ins>${{related_product.get_discount_price}}</ins> <del>${{related_product.price}}</del>
+                                            {%if related_product.discount != None%}
+                                                <ins>${{related_product.final_price}}</ins><span class="on-sale">{{related_product.discount}}% Off </span><del>${{related_product.regular_price}}</del>
                                             {%else%}
-                                                <ins>${{related_product.price}}</ins>
+                                                <ins>${{related_product.final_price}}</ins>
                                             {%endif%}
                                         </div> 
                                     </div>
+                                {%empty%}
+                                    <h3 align-text="center">No related products</h3>
                                 {%endfor%}
                             </div>
                         </div>
@@ -137,31 +175,7 @@
     </div>
 
 <script>
-$(document).ready(function($){
-    var defaultValue = $('#select').val();
-    $(document).on('click', '#add-button', function (e) {
-        e.preventDefault();
-        if ($('#select').val() <= parseInt(0)) {
-            alert('Quantity must be greater than 0');
-            $('#select').val(defaultValue);
-            return false;
-        };
-        $.ajax({
-            type: 'POST',
-            url: '{% url "basket:basket_add" %}',
-            data: {
-                productid: $('#add-button').val(),
-                productqty: $('#select').val(),
-                csrfmiddlewaretoken: "{{csrf_token}}",
-                action: 'post'
-            },
-            success: function (json) {
-                $('#basket-total-price').html(json.subtotal)
-                $('#basket-qty').html(json.qty)
-            },
-            error: function (xhr, errmsg, err) {}
-        });
-    });
-})
+    var CSRF_TOKEN = "{{csrf_token}}";
 </script>
+<script src="{%static 'js/products/products.js'%}"></script>
 {%endblock content%}

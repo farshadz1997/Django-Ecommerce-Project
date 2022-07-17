@@ -1,4 +1,4 @@
-from .models import Category
+from .models import Category, Brand
 
-def categories(request):
-    return {'Categories': Category.objects.all()}
+def products(request):
+    return {'categories': Category.objects.all(), 'brands': Brand.objects.all()}
