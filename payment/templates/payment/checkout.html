@@ -16,7 +16,15 @@
                 <h3 class="mb-3">Billing address</h3>
                 <hr class="my-4">
                 <!-- Error messages in this element -->
-                <div id="card-errors" class="a" role="alert"></div>
+                <div id="card-errors" class="a" role="alert">
+                  {% if messages %}
+                  {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }}">
+                  {{message|safe}}
+                  </div>
+                  {% endfor %}
+                  {%endif%}
+                </div>
                 <form>
                   {%crispy form%}
                 </form>
@@ -32,6 +40,7 @@
 <script>
     {% comment %} Make csrf token availble in JS files {% endcomment %}
     var CSRF_TOKEN = '{{ csrf_token }}';
+    var STRIPE_PUBLIC_KEY = '{{stripe_public_key}}';
 </script>
 <script src="https://js.stripe.com/v3/"></script>
 <script src="{% static 'js/payment/index.js' %}" data-rel-js></script>

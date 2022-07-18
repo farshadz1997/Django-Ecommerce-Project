@@ -1,7 +1,7 @@
 //'use strict';
 
 
-var stripe = Stripe('pk_test_51LABjGJ95xMRPOPu7R5TnmrhGVXbvTMDTHGZOjcuPQNuNJ0NPOZkzcWuPhtyNKXEGx9D13xs9pi4IR1vxaPz0njR00XArZFN6S');
+var stripe = Stripe(STRIPE_PUBLIC_KEY);
 
 var elem = document.getElementById('submit');
 clientsecret = elem.getAttribute('data-secret');
@@ -16,6 +16,10 @@ base: {
 }
 };
 
+window.id = $("#id_addresses").val();
+$(document).on("change", "#id_addresses", function() {
+  window.id = $(this).children("option:selected").val()
+})
 
 var card = elements.create("card", { style: style });
 card.mount("#card-element");
@@ -36,17 +40,6 @@ var form = document.getElementById('payment-form');
 form.addEventListener('submit', function(ev) {
 ev.preventDefault();
 
-var FirstName = document.getElementById("id_first_name").value;
-var LastName = document.getElementById("id_last_name").value;
-var PhoneNumber = document.getElementById("id_phone_number").value;
-var Add1 = document.getElementById("id_address_line_1").value;
-var Add2 = document.getElementById("id_address_line_2").value;
-var country = document.getElementById("id_country").value;
-var state = document.getElementById("id_state").value;
-var city = document.getElementById("id_town_city").value;
-var email = document.getElementById("id_email").value;
-var postcode = document.getElementById("id_postcode").value;
-
 
   $.ajax({
     type: "POST",
@@ -55,12 +48,7 @@ var postcode = document.getElementById("id_postcode").value;
       order_key: clientsecret,
       csrfmiddlewaretoken: CSRF_TOKEN,
       action: "post",
-      full_name: FirstName + ' ' + LastName,
-      phone_number: PhoneNumber,
-      add1: Add1,
-      add2: Add2,
-      city: city,
-      post_code: postcode,
+      address_id: id,
     },
     success: function (json) {
       console.log(json.success)
@@ -70,19 +58,22 @@ var postcode = document.getElementById("id_postcode").value;
           card: card,
           billing_details: {
             address:{
-                line1:Add1,
-                line2:Add2,
-                country:country,
-                state:state,
-                city:city,
+                line1: json.add1,
+                line2: json.add2,
+                country: json.country,
+                state: json.state,
+                city: json.city,
             },
-            name: FirstName + ' ' + LastName
+            name: json.first_name + ' ' + json.last_name,
           },
         }
       }).then(function(result) {
         if (result.error) {
           console.log('payment error')
           console.log(result.error.message);
+          var displayError = document.getElementById('card-errors');
+          displayError.textContent = result.error.message;
+          $('#card-errors').addClass('alert alert-danger');
         } else {
           if (result.paymentIntent.status === 'succeeded') {
             console.log('payment processed')
@@ -97,7 +88,7 @@ var postcode = document.getElementById("id_postcode").value;
 
     },
     error: function (xhr, errmsg, err) {
-      windows.location.replace("http://localhost:8000/payment/error/")
+      window.location.replace("http://localhost:8000/payment/error/")
     },
   });
 
