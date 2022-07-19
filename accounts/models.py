@@ -1,5 +1,6 @@
 import uuid
-
+from django.utils.html import format_html
+from django.urls import reverse
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -67,7 +68,10 @@ class UserBase(AbstractBaseUser, PermissionsMixin):
             [self.email],
             fail_silently=False,
         )
-
+        
+    def link_to_user(self):
+        """link to user details in the admin site"""
+        return format_html(f'<a href="{reverse("admin:accounts_userbase_change", args=(self.id,))}">{self.user_name}</a>')
 
 class Address(models.Model):
     """

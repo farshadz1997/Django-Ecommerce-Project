@@ -4,16 +4,22 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from Products.models import Product
+from accounts.models import Address
 
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='order_user')
-    full_name = models.CharField(_('Full name'), max_length=50)
-    address1 = models.CharField(_('Address 1'), max_length=250)
-    address2 = models.CharField(_('Address 2'), max_length=250, blank=True)
-    city = models.CharField(_('City'), max_length=100)
-    phone = models.CharField(_('Phone number'), max_length=100)
-    post_code = models.CharField(_('Post code'), max_length=20)
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, related_name='order_address', blank=True, null=True)
+    first_name = models.CharField(_('first name'), max_length=50)
+    last_name = models.CharField(_('last name'), max_length=50)
+    phone = models.CharField(_("Phone Number"), max_length=20)
+    address_line_1 = models.CharField(_('address line 1'), max_length=75)
+    address_line_2 = models.CharField(_('address line 2'), max_length=75, blank=True, null=True)
+    postcode = models.CharField(_("Postcode"), max_length=25)
+    city = models.CharField(_('city'), max_length=50)
+    state = models.CharField(_('state'), max_length=50)
+    country = models.CharField(_('country'), max_length=50)
+    delivery_instructions = models.TextField(_('delivery instructions'), max_length=500, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     total_paid = models.DecimalField(max_digits=10, decimal_places=2)
@@ -37,7 +43,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product,
                                 related_name='order_items',
                                 on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):

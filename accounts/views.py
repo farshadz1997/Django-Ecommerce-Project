@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sites.shortcuts import get_current_site
@@ -15,7 +14,7 @@ from django.views.generic import CreateView, DeleteView, UpdateView, View, Templ
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django.conf import settings
-from django.db.models import Sum, F
+from django.db.models import Sum
 from Products.models import Product
 from orders.models import Order
 
@@ -177,6 +176,8 @@ class AddressCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return redirect("accounts:addresses")
             
     def form_valid(self, form):
+        if Address.objects.filter(customer=self.request.user, default=True).count() == 0:
+            form.instance.default = True
         form.instance.customer = self.request.user
         return super().form_valid(form)
     

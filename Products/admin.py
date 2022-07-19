@@ -6,9 +6,6 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import Category, Product, ProductImage, Brand, Slider
 
-admin.site.register(Category)
-admin.site.register(Brand)
-admin.site.register(Slider)
 
 class ProductImageInlineFormset(forms.models.BaseInlineFormSet):
     def clean(self):
@@ -111,3 +108,38 @@ class ProductAdmin(admin.ModelAdmin):
             messages.success(request, "Discount applied to 1 product.")
         elif count > 1:
             messages.success(request, f"Discount applied to {count} products.")
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("title" ,"pub_date", "count_objs")
+    
+    @admin.display(description=_("Count of objects in category"))
+    def count_objs(self, obj):
+        return obj.products.all().count()
+    
+    
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    list_display = ("title" ,"created_at", "count_objs")
+    
+    @admin.display(description=_("Count of objects in brand"))
+    def count_objs(self, obj):
+        return obj.products.all().count()
+    
+
+@admin.register(Slider)
+class SliderAdmin(admin.ModelAdmin):
+    list_display = ("product_title" , "product_category", "product_brand", "created_at",)
+    
+    @admin.display(description=_("product's title"))
+    def product_title(self, obj):
+        return obj.product
+    
+    @admin.display(description=_("product's category"))
+    def product_category(self, obj):
+        return obj.product.category
+    
+    @admin.display(description=_("product's brand"))
+    def product_brand(self, obj):
+        return obj.product.brand
