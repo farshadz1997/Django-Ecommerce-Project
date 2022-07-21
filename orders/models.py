@@ -1,11 +1,17 @@
-from decimal import Decimal
+from django.db.models import Prefetch
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from Products.models import Product
+from Products.models import Product, ProductImage
 from accounts.models import Address
 
+class OrderManager(models.Manager):
+    def get_queryset(self):
+        return super(OrderManager, self).get_queryset().prefetch_related("items", Prefetch(
+            "items__product__images", 
+            ProductImage.objects.filter(is_feature=True), 
+            "main_image"))
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='order_user')
@@ -25,6 +31,9 @@ class Order(models.Model):
     total_paid = models.DecimalField(max_digits=10, decimal_places=2)
     order_key = models.CharField(_('Order key'), max_length=200)
     billing_status = models.BooleanField(_('Billing status'), default=False)
+
+    objects = models.Manager()
+    orders = OrderManager()
 
     class Meta:
         ordering = ('-id', '-created')
