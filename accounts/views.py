@@ -259,4 +259,4 @@ class OrdersView(LoginRequiredMixin, ListView):
     context_object_name = "orders"
     
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user, billing_status=True).annotate(items_qty=Sum('items__quantity')).order_by('-created')
+        return Order.orders.filter(user=self.request.user, billing_status=True).annotate(items_qty=Sum('items__quantity')).order_by('-created')

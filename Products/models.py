@@ -3,6 +3,7 @@ from ckeditor.fields import RichTextField
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import Prefetch
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
@@ -11,7 +12,10 @@ from PIL import Image
 
 class ProductManager(models.Manager):
     def get_queryset(self):
-        return super(ProductManager, self).get_queryset().filter(is_active=True)
+        return super(ProductManager, self).get_queryset().prefetch_related(Prefetch(
+            "images", 
+            ProductImage.objects.filter(is_feature=True), 
+            "main_image")).filter(is_active=True)
 
 
 class Product(models.Model):
@@ -39,6 +43,7 @@ class Product(models.Model):
         verbose_name = _("Product")
         verbose_name_plural = _("Products")
         ordering = ["-created_at"]
+        default_manager_name = "products"
     
     def __str__(self):
         return self.title

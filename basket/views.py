@@ -9,7 +9,7 @@ from .basket import Basket
 
 def basket_summary(request):
     basket = Basket(request)
-    products = Product.objects.all().order_by("-created_at")[:4]
+    products = Product.products.all()[:4]
     offers = Product.products.order_by("?").exclude(id__in=basket.basket.keys())[:2]
     return render(request, "basket/basket_summary.html", {"basket": basket, "recent_products": products, "offers": offers})
 
@@ -19,7 +19,7 @@ def basket_add(request):
     if request.POST.get("action") == "post":
         product_id = int(request.POST.get("productid"))
         product_qty = int(request.POST.get("productqty"))
-        product = get_object_or_404(Product, id=product_id)
+        product = get_object_or_404(Product.products, id=product_id)
         if product.quantity < product_qty:
             response = JsonResponse({"error": f"Not enough {product.title} available in stock."})
             return response

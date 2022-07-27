@@ -71,9 +71,7 @@
                         {%for product in latest_P%}
                         <div class="single-product">
                             <div class="product-f-image">
-                                {%with img=product.get_featured_image%}
-                                <img src="{{img.image.url}}" alt="{{img.alt_text}}">
-                                {%endwith%}
+                                <img src="{{product.main_image.0.image.url}}" alt="{{product.main_image.0.alt_text}}">
                                 <div class="product-hover">
                                     {%if product.in_stock%}
                                     <a href="" class="add-to-cart-link" data-product_id="{{product.id}}"><i
@@ -130,12 +128,11 @@
                 <div class="single-product-widget">
                     <h2 class="product-wid-title">Top Sellers</h2>
                     <a href="{%url 'Products:top_sellers'%}" class="wid-view-more">View All</a>
-                    {%for product in top_sellers%}
+                    {%with TopSellers=top_sellers%}
+                    {%for product in TopSellers%}
                     <div class="single-wid-product">
-                        {%with img=product.get_featured_image%}
-                        <a href="{{product.get_absolute_url}}"><img src="{{img.image.url}}" alt="{{img.alt_text}}"
+                        <a href="{{product.get_absolute_url}}"><img src="{{product.main_image.0.image.url}}" alt="{{product.main_image.0.alt_text}}"
                                 class="product-thumb"></a>
-                        {%endwith%}
                         <h2><a href="{{product.get_absolute_url}}">{{product.title}}</a></h2>
                         <div class="product-wid-rating">
                             <i class="fa fa-star"></i>
@@ -153,6 +150,7 @@
                         </div>
                     </div>
                     {%endfor%}
+                    {%endwith%}
                 </div>
             </div>
             <div class="col-md-4">
@@ -162,10 +160,8 @@
                     {%if user.is_authenticated%}
                     {%for product in recently_viewed%}
                     <div class="single-wid-product">
-                        {%with img=product.get_featured_image%}
-                        <a href="{{product.get_absolute_url}}"><img src="{{img.image.url}}" alt="{{img.alt_text}}"
+                        <a href="{{product.get_absolute_url}}"><img src="{{product.main_image.0.image.url}}" alt="{{product.main_image.0.alt_text}}"
                                 class="product-thumb"></a>
-                        {%endwith%}
                         <h2><a href="{{product.get_absolute_url}}">{{product.title}}</a></h2>
                         <div class="product-wid-rating">
                             <i class="fa fa-star"></i>
@@ -204,10 +200,8 @@
                     <a href="{%url 'Products:Product_list'%}" class="wid-view-more">View All</a>
                     {%for product in latest_products|slice:":3"%}
                     <div class="single-wid-product">
-                        {%with img=product.get_featured_image%}
-                        <a href="{{product.get_absolute_url}}"><img src="{{img.image.url}}" alt="{{img.alt_text}}"
+                        <a href="{{product.get_absolute_url}}"><img src="{{product.main_image.0.image.url}}" alt="{{product.main_image.0.alt_text}}"
                                 class="product-thumb"></a>
-                        {%endwith%}
                         <h2><a href="{{product.get_absolute_url}}">{{product.title}}</a></h2>
                         <div class="product-wid-rating">
                             <i class="fa fa-star"></i>

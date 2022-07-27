@@ -57,9 +57,8 @@
                                             </td>
 
                                             <td class="product-thumbnail">
-                                                {%with img=product.get_featured_image%}
-                                                <a href="{{product.get_absolute_url}}"><img width="145" height="145" alt="{{img.alt_text}}" class="shop_thumbnail" src="{{img.image.url}}"></a>
-                                                {%endwith%}
+                                                <a href="{{product.get_absolute_url}}"><img width="145" height="145" alt="{{product.main_image.0.alt_text}}"
+                                                     class="shop_thumbnail" src="{{product.main_image.0.image.url}}"></a>
                                             </td>
 
                                             <td class="product-name">
@@ -117,9 +116,8 @@
                                     {%for offer in offers%}
                                         <li class="product">
                                             <a href="{{offer.get_absolute_url}}">
-                                                {%with img=offer.get_featured_image%}
-                                                <img width="325" height="325" alt="{{img.alt_text}}" class="attachment-shop_catalog wp-post-image" src="{{img.image.url}}" >
-                                                {%endwith%}
+                                                <img width="325" height="325" alt="{{offer.main_image.0.alt_text}}"
+                                                 class="attachment-shop_catalog wp-post-image" src="{{offer.main_image.0.image.url}}" >
                                                 <h3>{{offer.title}}</h3>
                                                 <span class="price">
                                                     {%if offer.discount != None%}

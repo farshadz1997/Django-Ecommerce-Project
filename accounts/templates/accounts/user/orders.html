@@ -60,10 +60,8 @@
                     <tbody class="collapse" id="collapseOrderBody{{order.id}}">
                     {% for item in order.items.all %}
                         <tr>
-                            {%with img=item.product.get_featured_image%}
-                                <td><img src="{{ img.image.url }}" alt="{{ img.alt_text }}"
+                                <td><img src="{{ item.product.main_image.0.image.url }}" alt="{{ item.product.main_image.0.alt_text }}"
                                 class="img-thumbnail" style="width: 75px; height: 75px"></td>
-                            {%endwith%}
                             <td><a href="{{item.product.get_absolute_url}}">{{ item.product.title }}</a></td>
                             <td>{{ item.quantity }}</td>
                             <td>${{ item.price }}</td>

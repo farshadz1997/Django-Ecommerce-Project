@@ -7,7 +7,7 @@ from .models import Category, Product, UserProductTimestamp, Brand
 
 
 class ProductListView(ListView):
-    queryset = Product.products.all()
+    model = Product
     ordering = ["-in_stock", "-created_at"]
     template_name = "Products/Product_list.html"
     context_object_name = "products"
@@ -22,9 +22,8 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["recent_products"] = Product.products.all().order_by("-created_at")[:4]
+        context["recent_products"] = Product.products.exclude(pk=self.object.pk)[:4]
         context["related_products"] = Product.products.filter(category=self.object.category, brand=self.object.brand, in_stock=True).exclude(pk=self.object.pk)[:4]
-        context["banner_title"] = self.object.title
         return context
     
     def get(self, request, *args, **kwargs):
@@ -65,6 +64,7 @@ class ProductSearchView(ListView):
 class ProductCategoryView(ListView):
     template_name = "Products/Product_list.html"
     context_object_name = "products"
+    paginate_by = 12
 
     def get_queryset(self):
         return Product.products.filter(category__slug=self.kwargs["category"])
@@ -79,6 +79,7 @@ class ProductOnSaleView(ListView):
     template_name = "Products/Product_list.html"
     context_object_name = "products"
     extra_context = {"banner_title": "On Sale Products"}
+    paginate_by = 12
     
     def get_queryset(self):
         return Product.products.filter(discount__isnull=False)

@@ -812,8 +812,6 @@ input[type="submit"]:hover, button[type=submit]:hover {background-color: #222}
 .product-gallery img {
     width: 76px;
     height: 76px;
-    /* max-width: 76px; */
-    /* max-height: 76px; */
     margin-left: 15px;
 }
 .product-name {

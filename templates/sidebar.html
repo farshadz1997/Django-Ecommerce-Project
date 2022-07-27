@@ -1,5 +1,3 @@
-{%load thumbnail%}
-
 <div class="col-md-4">
     <div class="single-sidebar">
         <h2 class="sidebar-title">Search Products</h2>
@@ -15,9 +13,7 @@
         <h2 class="sidebar-title">Products</h2>
         {%for recent_product in recents%}
             <div class="thubmnail-recent">
-                {%with img=recent_product.get_featured_image%}
-                    <img src="{{img.image.url}}" class="recent-thumb" alt="{{img.alt_text}}">
-                {%endwith%}
+                    <img src="{{recent_product.main_image.0.image.url}}" class="recent-thumb" alt="{{recent_product.main_image.0.alt_text}}">
                 <h2><a href="{{recent_product.get_absolute_url}}">{{recent_product.title}}</a></h2>
                 <div class="product-sidebar-price">
                     {%if recent_product.discount != None%}

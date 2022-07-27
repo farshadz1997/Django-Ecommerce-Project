@@ -25,9 +25,7 @@
                 <div class="col-md-3 col-sm-6">
                     <div class="single-shop-product">
                         <div class="product-upper">
-                            {%with img=product.get_featured_image%}
-                                <img src="{{img.image.url}}" alt="{{img.alt_text}}">
-                            {%endwith%}
+                            <img src="{{product.main_image.0.image.url}}" alt="{{product.main_image.0.alt_text}}">
                         </div>
                         <h2><a href="{{product.get_absolute_url}}">{{product.title}}</a></h2>
                         {%if product.in_stock%}

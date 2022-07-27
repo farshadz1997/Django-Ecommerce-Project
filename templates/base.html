@@ -127,7 +127,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Categories <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 {%for category in categories%}
-                                    <li><a href="{{category.get_absolute_url}}">{{category.title}} <span class="pull-right">{{category.products.all.count}}</span></a></li>
+                                    <li><a href="{{category.get_absolute_url}}">{{category.title}} <span class="pull-right">{{category.count}}</span></a></li>
                                 {%endfor%}
                             </ul>
                         </li>
@@ -135,7 +135,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Brands <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 {%for brand in brands%}
-                                    <li><a href="{{brand.get_absolute_url}}">{{brand.title}} <span class="pull-right">{{brand.products.all.count}}</span></a></li>
+                                    <li><a href="{{brand.get_absolute_url}}">{{brand.title}} <span class="pull-right">{{brand.count}}</span></a></li>
                                 {%endfor%}
                             </ul>
                         </li>
