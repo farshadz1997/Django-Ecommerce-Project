@@ -1,6 +1,5 @@
 {%extends 'base.html'%}
 {%load static%}
-{% load thumbnail %}
 
 {%block title%}Home Page{%endblock title%}
 {%block content%}
@@ -127,7 +126,7 @@
             <div class="col-md-4">
                 <div class="single-product-widget">
                     <h2 class="product-wid-title">Top Sellers</h2>
-                    <a href="{%url 'Products:top_sellers'%}" class="wid-view-more">View All</a>
+                    <a href="{%url 'products:top_sellers'%}" class="wid-view-more">View All</a>
                     {%with TopSellers=top_sellers%}
                     {%for product in TopSellers%}
                     <div class="single-wid-product">
@@ -156,7 +155,7 @@
             <div class="col-md-4">
                 <div class="single-product-widget">
                     <h2 class="product-wid-title">Recently Viewed</h2>
-                    <a href="{%url 'Products:Product_recently_viewed'%}" class="wid-view-more">View All</a>
+                    <a href="{%url 'products:product_recently_viewed'%}" class="wid-view-more">View All</a>
                     {%if user.is_authenticated%}
                     {%for product in recently_viewed%}
                     <div class="single-wid-product">
@@ -197,7 +196,7 @@
             <div class="col-md-4">
                 <div class="single-product-widget">
                     <h2 class="product-wid-title">Top New</h2>
-                    <a href="{%url 'Products:Product_list'%}" class="wid-view-more">View All</a>
+                    <a href="{%url 'products:product_list'%}" class="wid-view-more">View All</a>
                     {%for product in latest_products|slice:":3"%}
                     <div class="single-wid-product">
                         <a href="{{product.get_absolute_url}}"><img src="{{product.main_image.0.image.url}}" alt="{{product.main_image.0.alt_text}}"

@@ -22,10 +22,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls', namespace='home')),
     path('cart/', include('basket.urls', namespace='basket')),
-    path('products/', include('Products.urls', namespace='Products')),
+    path('products/', include('products.urls', namespace='products')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('payment/', include('payment.urls', namespace='payment')),
     path('orders/', include('orders.urls', namespace='orders')),
+    path('__debug__/', include('debug_toolbar.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

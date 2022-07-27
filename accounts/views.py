@@ -15,7 +15,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django.conf import settings
 from django.db.models import Sum
-from Products.models import Product
+from products.models import Product
 from orders.models import Order
 
 from .forms import (

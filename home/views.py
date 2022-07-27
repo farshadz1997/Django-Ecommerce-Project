@@ -1,5 +1,5 @@
 from django.views.generic.base import TemplateView
-from Products.models import Product, Slider
+from products.models import Product, Slider
 
 
 class HomePage(TemplateView):

@@ -1,7 +1,4 @@
 from django.http.response import JsonResponse
-from django.shortcuts import render
-from Products.models import Product
-from django.db.models import F
 
 from basket.basket import Basket
 

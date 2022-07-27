@@ -1,6 +1,5 @@
 from autoslug import AutoSlugField
 from ckeditor.fields import RichTextField
-from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Prefetch
@@ -49,7 +48,7 @@ class Product(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("Products:Product_detail", kwargs={"pk": self.pk, "slug": self.slug})
+        return reverse("products:product_detail", kwargs={"pk": self.pk, "slug": self.slug})
 
     def get_featured_image(self):
         obj = self.images.filter(is_feature=True).first()
@@ -66,7 +65,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name="images", verbose_name=_("Product"), on_delete=models.CASCADE)
-    image = models.ImageField(verbose_name=_("Image"), help_text=_("Upload a product image"), upload_to="Products/")
+    image = models.ImageField(verbose_name=_("Image"), help_text=_("Upload a product image"), upload_to="products/")
     alt_text = models.CharField(
         verbose_name=_("Alternative text"),
         help_text=_("Please add alternative text"),
@@ -101,7 +100,7 @@ class Category(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("Products:Product_category", kwargs={"category": self.slug})
+        return reverse("products:product_category", kwargs={"category": self.slug})
 
 
 class Brand(models.Model):
@@ -118,15 +117,15 @@ class Brand(models.Model):
         return self.title
     
     def get_absolute_url(self):
-        return reverse("Products:Product_brand", kwargs={"brand":self.slug})
+        return reverse("products:product_brand", kwargs={"brand":self.slug})
     
     def save(self, *args, **kwargs):
         super(Brand, self).save(*args, **kwargs)
         img = Image.open(self.image.path)
         if img.width > 270 or img.height > 120:
             output_size = (270, 120)
-            img.thumbnail(output_size)
-            img.save(self.image.path)
+            final_image = img.resize(output_size)
+            final_image.save(self.image.path)
     
     
 class UserProductTimestamp(models.Model):

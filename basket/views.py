@@ -1,8 +1,7 @@
 import json
-from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render, redirect
-from Products.models import Product
+from django.shortcuts import get_object_or_404, render
+from products.models import Product
 
 from .basket import Basket
 

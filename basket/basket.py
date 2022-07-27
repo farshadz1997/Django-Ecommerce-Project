@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from django.conf import settings
-from Products.models import Product
+from products.models import Product
 
 
 class Basket:
