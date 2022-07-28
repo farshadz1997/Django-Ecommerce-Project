@@ -1,5 +1,6 @@
 from autoslug import AutoSlugField
 from ckeditor.fields import RichTextField
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Prefetch
@@ -22,7 +23,7 @@ class Product(models.Model):
     quantity = models.PositiveIntegerField(_("Quantity"), default=1)
     sold = models.PositiveIntegerField(_("Sold"), default=0)
     category = models.ForeignKey("Category", related_name="products", verbose_name=_("Category"), on_delete=models.CASCADE)
-    brand = models.ForeignKey("Brand", related_name="products", verbose_name=_("Brand"), on_delete=models.CASCADE, null=True)
+    brand = models.ForeignKey("Brand", related_name="products", verbose_name=_("Brand"), on_delete=models.CASCADE)
     regular_price = models.DecimalField(_("Price"), max_digits=10, decimal_places=2)
     discount = models.PositiveIntegerField(
         _("Discount"), blank=True, null=True, validators=[MaxValueValidator(99), MinValueValidator(1)]
@@ -50,17 +51,17 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse("products:product_detail", kwargs={"pk": self.pk, "slug": self.slug})
 
-    def get_featured_image(self):
-        obj = self.images.filter(is_feature=True).first()
-        image = obj.image
-        alt = obj.alt_text
-        return {"image": image, "alt_text": alt}
-
     def save(self, *args, **kwargs):
         self.final_price = self.regular_price
         if self.discount != None:
             self.final_price = self.regular_price - (self.regular_price * self.discount / 100)
         super(Product, self).save(*args, **kwargs)
+        
+    def delete(self, *args, **kwargs):
+        for image in self.images.all():
+            storage, path = image.image.storage, image.image.path
+            storage.delete(path)
+        super(Product, self).delete(*args, **kwargs)
 
 
 class ProductImage(models.Model):
@@ -148,6 +149,13 @@ class Slider(models.Model):
     def __str__(self):
         return self.product.title
     
+    def clean(self):
+        if Slider.objects.count() >= 5 and self.id is None:
+            raise ValidationError(_("You can only have 5 sliders"))
+        if Slider.objects.filter(product=self.product).exists() and self.id is None:
+            raise ValidationError(_("You can only have 1 slider per product"))
+        super(Slider, self).clean()
+    
     def save(self, *args, **kwargs):
         super(Slider, self).save(*args, **kwargs)
         img = Image.open(self.image)
@@ -155,3 +163,8 @@ class Slider(models.Model):
             output_size = (1200, 600)
             img.thumbnail(output_size)
             img.save(self.image.path)
+            
+    def delete(self, *args, **kwargs):
+        storage, path = self.image.storage, self.image.path
+        super(Slider, self).delete(*args, **kwargs)
+        storage.delete(path)
