@@ -89,7 +89,7 @@ class ProductAdmin(admin.ModelAdmin):
         "is_active",
     )
     list_editable = ("regular_price", "is_active")
-    list_filter = ("category", "is_active", "in_stock", DiscountFilter)
+    list_filter = ("category", "brand", "is_active", "in_stock", DiscountFilter)
     search_fields = [
         "title",
     ]

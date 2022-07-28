@@ -9,7 +9,7 @@ from .models import Category, Product, UserProductTimestamp, Brand
 class ProductListView(ListView):
     model = Product
     ordering = ["-in_stock", "-created_at"]
-    template_name = "Products/Product_list.html"
+    template_name = "products/product_list.html"
     context_object_name = "products"
     paginate_by = 12
     extra_context = {"banner_title": "All Products"}
@@ -17,7 +17,7 @@ class ProductListView(ListView):
 
 class ProductDetailView(DetailView):
     model = Product
-    template_name = "Products/Product_detail.html"
+    template_name = "products/product_detail.html"
     context_object_name = "product"
 
     def get_context_data(self, **kwargs):
@@ -43,7 +43,7 @@ class ProductDetailView(DetailView):
 
 
 class ProductSearchView(ListView):
-    template_name = "Products/Product_list.html"
+    template_name = "products/product_list.html"
     context_object_name = "products"
     extra_context = {"banner_title": "Search Results"}
     paginate_by = 12
@@ -62,7 +62,7 @@ class ProductSearchView(ListView):
 
 
 class ProductCategoryView(ListView):
-    template_name = "Products/Product_list.html"
+    template_name = "products/product_list.html"
     context_object_name = "products"
     paginate_by = 12
 
@@ -76,7 +76,7 @@ class ProductCategoryView(ListView):
 
 
 class ProductOnSaleView(ListView):
-    template_name = "Products/Product_list.html"
+    template_name = "products/product_list.html"
     context_object_name = "products"
     extra_context = {"banner_title": "On Sale Products"}
     paginate_by = 12
@@ -86,7 +86,7 @@ class ProductOnSaleView(ListView):
 
 
 class ProductTopSellersView(ListView):
-    template_name = "Products/Product_list.html"
+    template_name = "products/product_list.html"
     context_object_name = "products"
     extra_context = {"banner_title": "Top Sellers"}
     paginate_by = 12
@@ -96,7 +96,7 @@ class ProductTopSellersView(ListView):
 
     
 class ProductRecentlyViewdView(LoginRequiredMixin, ListView):
-    template_name = "Products/Product_list.html"
+    template_name = "products/product_list.html"
     context_object_name = "products"
     extra_context = {"banner_title": "Recently Viewed Products"}
     paginate_by = 12
@@ -106,7 +106,7 @@ class ProductRecentlyViewdView(LoginRequiredMixin, ListView):
 
 
 class ProductBrandView(ListView):
-    template_name = "Products/Product_list.html"
+    template_name = "products/product_list.html"
     context_object_name = "products"
     paginate_by = 12
     
