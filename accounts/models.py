@@ -100,3 +100,10 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.address_line_1}, {self.city}, {self.state}, {self.postcode}"
+    
+    def delete(self, *args, **kwargs):
+        super(Address, self).delete(*args, **kwargs)
+        if self.default and Address.objects.filter(customer=self.customer).exclude(id=self.id).count() >= 1:
+            obj = Address.objects.filter(customer=self.customer).exclude(id=self.id).first()
+            obj.default = True
+            obj.save()

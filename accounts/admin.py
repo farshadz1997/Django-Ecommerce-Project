@@ -8,6 +8,8 @@ from .models import Address, UserBase
 class AddressInlineFormSet(forms.models.BaseInlineFormSet):
     def clean(self):
         data = self.cleaned_data
+        if len(data) == 0:
+            return data
         count_defaults = 0
         for addr in data:
             count_defaults += addr.get("default", 0)
