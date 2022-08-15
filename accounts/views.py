@@ -109,6 +109,11 @@ class PasswordResetConfirm(SuccessMessageMixin, auth_views.PasswordResetConfirmV
     success_url = reverse_lazy("accounts:login")
     form_class = PwdResetConfirmForm
     success_message = "Your password changed successfully, you may login now."
+    
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            logout(request)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ChangePassword(LoginRequiredMixin, SuccessMessageMixin, auth_views.PasswordChangeView):

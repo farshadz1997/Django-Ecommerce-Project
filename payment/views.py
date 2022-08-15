@@ -28,7 +28,7 @@ class Error(LoginRequiredMixin, View):
         return redirect('payment:pay')
 
 @login_required
-def BasketView(request):
+def pay(request):
     basket = Basket(request)
     if basket.__len__() == 0:
         messages.warning(request, 'Before proceeding to payment you need to add at least one product to your cart.')
