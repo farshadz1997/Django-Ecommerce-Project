@@ -9,7 +9,9 @@
         <div class="col-md-6">
             <br>
             <h2 class="h2">{{title}}</h2>
+            {%if request.resolver_match.url_name != "pwdreset" and request.resolver_match.url_name != "pwdreset_confirm"%}
             <h4 class="h4">Return to the <a href="{%url 'accounts:dashboard'%}">dashboard</a></h4>
+            {%endif%}
             <hr class="my-4"></hr>
             {%if form.errors%}
                 <div class="alert alert-danger" role="alert">

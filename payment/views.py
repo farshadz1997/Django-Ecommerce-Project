@@ -8,18 +8,39 @@ from django.views.generic.base import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.conf import settings
+from django.contrib.sessions.models import Session
+from django.contrib.sessions.backends.db import SessionStore
 
+from orders.models import Voucher
 from .forms import PaymentForm
 from basket.basket import Basket
 from orders.views import payment_confirmation
-from accounts.models import Address
+from accounts.models import Address, UserBase
 
-@login_required
-def order_placed(request):
-    basket = Basket(request)
-    basket.clear()
-    messages.success(request, 'Your order has been placed')
-    return redirect('accounts:orders')
+
+class OrderPlacedView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        basket = Basket(request)
+        if basket.voucher["discount"] > 0:
+            voucher = Voucher.objects.get(voucher_code=basket.voucher["code"])
+            if voucher.max_use != None and voucher.max_use > 0:
+                voucher.max_use -= 1
+                if voucher.max_use == 0:
+                    self.clear_expired_discount_from_sessions(voucher.voucher_code)
+                voucher.save()
+            user = UserBase.objects.get(id=request.user.id)
+            user.vouchers.add(voucher)
+        basket.clear()
+        messages.success(request, 'Your order has been placed')
+        return redirect('accounts:orders')
+                        
+    def clear_expired_discount_from_sessions(self, voucher: str):
+        for ses in Session.objects.all():
+            session = SessionStore(ses.session_key)
+            if 'voucher' in session and session['voucher']['code'] == voucher:
+                session['voucher']['code'] = None
+                session['voucher']['discount'] = 0
+                session.save()
 
 
 class Error(LoginRequiredMixin, View):
@@ -28,7 +49,7 @@ class Error(LoginRequiredMixin, View):
         return redirect('payment:pay')
 
 @login_required
-def pay(request):
+def payment(request):
     basket = Basket(request)
     if basket.__len__() == 0:
         messages.warning(request, 'Before proceeding to payment you need to add at least one product to your cart.')

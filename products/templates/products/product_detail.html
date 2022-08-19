@@ -59,7 +59,7 @@
                                 {%endif%}
                                 <div class="product-inner">
                                     <h2 class="product-name">{{product.title}}</h2>
-                                    {%if product.quantity < 10 and product.quantity > 0%}
+                                    {%if 0 < product.quantity <= 10 and product.in_stock%}
                                     <h4 class="low-in-stock"> Only {{product.quantity}} left in stock</h4>
                                     {%endif%}
                                     {%if product.in_stock %}

@@ -155,6 +155,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # Basket session ID
 BASKET_SESSION_ID = 'basket'
+VOUCHER_SESSION_ID = 'voucher'
 
 AUTH_USER_MODEL = 'accounts.UserBase'
 LOGIN_REDIRECT_URL = 'accounts:dashboard'

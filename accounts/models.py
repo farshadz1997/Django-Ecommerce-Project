@@ -42,6 +42,7 @@ class UserBase(AbstractBaseUser, PermissionsMixin):
     user_name = models.CharField(_("User name"), max_length=150, unique=True)
     first_name = models.CharField(_("First name"), max_length=150, blank=True)
     last_name = models.CharField(_("Last name"), max_length=150, blank=True)
+    vouchers = models.ManyToManyField("orders.Voucher", related_name="users", blank=True)
     # User status
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -72,6 +73,7 @@ class UserBase(AbstractBaseUser, PermissionsMixin):
     def link_to_user(self):
         """link to user details in the admin site"""
         return format_html(f'<a href="{reverse("admin:accounts_userbase_change", args=(self.id,))}">{self.user_name}</a>')
+
 
 class Address(models.Model):
     """

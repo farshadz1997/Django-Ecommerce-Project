@@ -1,5 +1,6 @@
 {%extends 'base.html'%}
 {%load static%}
+{%load crispy_forms_tags%}
 {%block title%}Ustora | Cart{%endblock title%}
 
 {%block content%}
@@ -35,7 +36,13 @@
                                 {% endfor %}
                                 {%endif%}
                             </div>
-                            {% comment %} <form method="post" action="#"> {% endcomment %}
+                            {%if form.errors%}
+                            {%for f in form.errors.values%}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ f|striptags }}
+                                </div>
+                            {%endfor%}
+                            {%endif%}
                                 <table cellspacing="0" class="shop_table cart">
                                     <thead>
                                         <tr>
@@ -91,19 +98,19 @@
                                         {%if basket|length > 0%}
                                         <tr>
                                             <td class="actions" colspan="6">
-                                                <div class="coupon">
-                                                    <label for="coupon_code">Coupon:</label>
-                                                    <input type="text" placeholder="Coupon code" value="" id="coupon_code" class="input-text" name="coupon_code">
-                                                    <input type="submit" value="Apply Coupon" name="apply_coupon" class="button">
-                                                </div>
-                                                <input type="submit" value="Update Cart" id="update-button" name="update_cart" class="button">
-                                                <input type="submit" value="Checkout" onclick="location = {%url 'payment:pay'%}" name="proceed" class="checkout-button button alt wc-forward">
+                                                <form class="coupon" method="POST">
+                                                    {%csrf_token%}
+                                                    <label for="coupon_code">{{form.voucher_code.label}}</label>
+                                                    {{form.voucher_code}}
+                                                    <input type="submit" value="Apply Promo" name="apply_coupon" class="button">
+                                                    <input type="submit" value="Update Cart" id="update-button" name="update_cart" class="button">
+                                                    <input type="submit" value="Checkout" onclick="location = {%url 'payment:pay'%}" name="proceed" id="checkout" class="checkout-button button alt wc-forward">
+                                                </form>
                                             </td>
                                         </tr>
                                         {%endif%}
                                     </tbody>
                                 </table>
-                            {% comment %} </form> {% endcomment %}
 
                             <div class="cart-collaterals">
 
@@ -139,24 +146,33 @@
                                 <h2>Cart Totals</h2>
 
                                 <table cellspacing="0">
-                                    {%with basket_total_price=basket.get_total_price%}
                                     <tbody>
                                         <tr class="cart-subtotal">
                                             <th>Cart Subtotal</th>
-                                            <td><span class="amount" id="cart-subtotal">${{basket_total_price}}</span></td>
+                                            <td><span class="amount" id="cart-subtotal">${{basket.get_total_price_without_discount}}</span></td>
                                         </tr>
 
                                         <tr class="shipping">
                                             <th>Shipping and Handling</th>
                                             <td>Free Shipping</td>
                                         </tr>
+                                        {%if basket.voucher.code %}
+                                        <tr class="shipping">
+                                            <th>Promo code</th>
+                                            <td>{{basket.voucher.code}}</td>
+                                        </tr>
+                                        
+                                        <tr class="order-total">
+                                            <th>Discount</th>
+                                            <td><strong><span class="amount" id="discount">%{{basket.voucher.discount}}</span></strong> </td>
+                                        </tr>
+                                        {%endif%}
 
                                         <tr class="order-total">
                                             <th>Order Total</th>
-                                            <td><strong><span class="amount" id="subtotal">${{basket_total_price}}</span></strong> </td>
+                                            <td><strong><span class="amount" id="subtotal">${{basket.get_total_price}}</span></strong> </td>
                                         </tr>
                                     </tbody>
-                                    {%endwith%}
                                 </table>
                             </div>
                             {%endif%}

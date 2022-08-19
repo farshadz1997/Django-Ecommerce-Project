@@ -68,6 +68,7 @@ class DiscountActionForm(ActionForm):
         max_value=99,
         min_value=1,
         help_text=_("Discount in percent from 1 to 99"),
+        required=False,
         validators=[MaxValueValidator(99), MinValueValidator(1)],
     )
 
@@ -95,7 +96,7 @@ class ProductAdmin(admin.ModelAdmin):
     ]
     inlines = [ProductImageInline]
     action_form = DiscountActionForm
-    actions = ["set_discount_on_products", "delete_selected"]
+    actions = ["delete_selected", "set_discount_on_products"]
 
     @admin.action(description=_("Set discount on selected products"))
     def set_discount_on_products(self, request, queryset):

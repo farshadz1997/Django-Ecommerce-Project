@@ -1,9 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
-from django.urls import reverse
-from django.utils.html import format_html
 
-from .models import Order, OrderItem
+from .models import Order, OrderItem, Voucher
 
 
 class OrderItemInLine(admin.TabularInline):
@@ -37,3 +35,10 @@ class OrdersAdmin(admin.ModelAdmin):
     @admin.display(description=_("user"))
     def link_to_user(self, obj):
         return obj.user.link_to_user()
+    
+
+@admin.register(Voucher)
+class VoucherAdmin(admin.ModelAdmin):
+    list_display = ('voucher_code', 'discount', 'max_use', 'valid_from', 'valid_until', 'is_active', 'one_time_use')
+    list_filter = ('is_active',)
+    search_fields = ('voucher',)

@@ -45,7 +45,8 @@ class UserLoginForm(AuthenticationForm):
                 </p>
                 <p class="lost_password">
                     <a href="{%url 'accounts:pwdreset'%}">Lost your password?</a>
-                </p>"""
+                </p>
+                <p> Don't have an account? <a href="{%url 'accounts:register'%}">Register here</a></p>"""
             ),
         )
 
@@ -138,8 +139,6 @@ class PwdResetForm(PasswordResetForm):
         self.helper = FormHelper()
         self.helper.form_show_errors = False
         self.helper.error_text_inline = True
-        # self.helper.label_class = 'col-sm-4'
-        # self.helper.field_class = 'col-sm-5'
         self.helper.layout = Layout(
             Div("email", css_class="form-group mb-3"),
             HTML('<button class="btn-outline-info" type="submit" style="margin-bottom:25px">Reset Password</button>'),

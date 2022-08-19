@@ -1,5 +1,4 @@
 from decimal import Decimal
-
 from django.conf import settings
 from products.models import Product
 
@@ -15,7 +14,11 @@ class Basket:
         basket = self.session.get(settings.BASKET_SESSION_ID)
         if settings.BASKET_SESSION_ID not in request.session:
             basket = self.session[settings.BASKET_SESSION_ID] = {}
+        voucher = self.session.get(settings.VOUCHER_SESSION_ID)
+        if settings.VOUCHER_SESSION_ID not in request.session:
+            voucher = self.session[settings.VOUCHER_SESSION_ID] = {"discount": 0, "code": None}
         self.basket = basket
+        self.voucher = voucher
 
     def add(self, product, qty):
         """
@@ -26,6 +29,9 @@ class Basket:
         if product_id in self.basket:
             self.basket[product_id]["qty"] = qty
         else:
+            # if self.voucher["discount"] > 0:
+                # self.basket[product_id] = {"price": int(product.final_price - (product.final_price * self.voucher["discount"] / 100)), "qty": qty}
+            # else:
             self.basket[product_id] = {"price": str(product.final_price), "qty": qty}
 
         self.save()
@@ -62,8 +68,14 @@ class Basket:
             self.basket[product_id]["qty"] = qty
         self.save()
 
-    def get_total_price(self):
+    def get_total_price_without_discount(self):
         return sum(Decimal(item["price"]) * item["qty"] for item in self.basket.values())
+    
+    def get_total_price(self):
+        price = sum(Decimal(item["price"]) * item["qty"] for item in self.basket.values())
+        if self.voucher["discount"] != 0:
+            price = price - (price * self.voucher["discount"] / 100)
+        return price
 
     def delete(self, product):
         """
@@ -73,14 +85,22 @@ class Basket:
 
         if product_id in self.basket:
             del self.basket[product_id]
+            if self.basket.__len__() == 0:
+                del self.session[settings.VOUCHER_SESSION_ID]
             self.save()
 
+    def set_discount(self, code, discount):
+        self.voucher["discount"] = discount
+        self.voucher["code"] = code
+        self.save()
+    
     def save(self):
         self.session.modified = True
 
     def clear(self):
         # Remove basket from session
         del self.session[settings.BASKET_SESSION_ID]
+        del self.session[settings.VOUCHER_SESSION_ID]
         self.save()
 
 
