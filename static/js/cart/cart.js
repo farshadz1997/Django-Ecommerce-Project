@@ -19,10 +19,10 @@ jQuery(document).ready(function($){
                 $('#empty-cart').show("slow");
                 $('.cart_totals').hide('slow');
             };
-            $('#basket-total-price').html(json.subtotal);
+            $('#basket-total-price').html(json.cart_subtotal);
             $('#basket-qty').html(json.qty);
             $('#subtotal').html(json.subtotal);
-            $('#cart-subtotal').html(json.subtotal);
+            $('#cart-subtotal').html(json.cart_subtotal);
         },
         error: function (xhr, errmsg, err) {}
         });
@@ -48,10 +48,10 @@ jQuery(document).ready(function($){
             action: 'post'
         },
         success: function (json) {
-            $('#basket-total-price').html(json.subtotal);
+            $('#basket-total-price').html(json.cart_subtotal);
             $('#basket-qty').html(json.qty);
             $('#subtotal').html(json.subtotal);
-            $('#cart-subtotal').html(json.subtotal);
+            $('#cart-subtotal').html(json.cart_subtotal);
             for (let item in json.products){
                 $('#select-'+json.products[item]['productid']).html(json.products[item]["productqty"]);
                 $('#product-total-'+json.products[item]["productid"]).html(json.products[item]["productTotalPrice"]);
@@ -131,5 +131,9 @@ jQuery(document).ready(function($){
             $('#errors').html('Minimum number of items is 1.');
             return false
         }
+    })
+    
+    $("#checkout").on("click", function(e){
+        e.preventDefault();
     })
 })

@@ -7,12 +7,13 @@ from orders.models import Voucher
 from django.contrib import messages
 from django.conf import settings
 from django.urls import reverse, reverse_lazy
-from django.views.generic.edit import FormView
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormMixin
 
 from .basket import Basket
 
 
-class BasketSummaryView(FormView):
+class BasketSummaryView(TemplateView, FormMixin):
     template_name = "basket/basket_summary.html"
     form_class = VoucherForm
     success_url = reverse_lazy("basket:basket_summary")

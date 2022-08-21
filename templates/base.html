@@ -99,7 +99,7 @@
                 
                 <div class="col-sm-6">
                     <div class="shopping-item">
-                        <a href="{%url 'basket:basket_summary'%}">Cart - <span class="cart-amunt" id="basket-total-price">${{basket.get_total_price}}</span></a>
+                        <a href="{%url 'basket:basket_summary'%}">Cart - <span class="cart-amunt" id="basket-total-price">${{basket.get_total_price_without_discount}}</span></a>
                         <i class="fa fa-shopping-cart"></i> <span class="product-count" id="basket-qty">{{basket|length}}</span>
                     </div>
                 </div>

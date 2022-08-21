@@ -75,7 +75,7 @@ class Basket:
         price = sum(Decimal(item["price"]) * item["qty"] for item in self.basket.values())
         if self.voucher["discount"] != 0:
             price = price - (price * self.voucher["discount"] / 100)
-        return price
+        return round(price, 2)
 
     def delete(self, product):
         """
