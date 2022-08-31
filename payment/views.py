@@ -56,7 +56,7 @@ def payment(request):
         return redirect('basket:basket_summary')
     if Address.objects.filter(customer=request.user).count() == 0:
         messages.warning(request, 'Please add an address before proceeding.')
-        return redirect('accounts:addresses')
+        return redirect('accounts:add_address')
     
     total = str(basket.get_total_price())
     total = total.replace('.', '')
