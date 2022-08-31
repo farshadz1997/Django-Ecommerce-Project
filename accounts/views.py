@@ -1,11 +1,11 @@
 from django.contrib import messages
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import Http404
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes, force_str
@@ -42,52 +42,56 @@ class Dashboard(LoginRequiredMixin, TemplateView):
     template_name = "accounts/user/dashboard.html"
 
 
-def account_register(request):
+class RegisterView(SuccessMessageMixin, FormView):
+    form_class = RegistrationForm
+    template_name = "accounts/register.html"
+    success_url = reverse_lazy("accounts:login")
+    success_message = "Your account has been created! Activation email sent to your email."
 
-    if request.user.is_authenticated:
-        return redirect("account:dashboard")
-
-    if request.method == "POST":
-        registerForm = RegistrationForm(request.POST)
-        if registerForm.is_valid():
-            user = registerForm.save(commit=False)
-            user.email = registerForm.cleaned_data["email"]
-            user.set_password(registerForm.cleaned_data["password"])
-            user.is_active = False
-            user.save()
-            current_site = get_current_site(request)
-            subject = "Activate your Account"
-            message = render_to_string(
-                "accounts/account_activation_email.html",
-                {
-                    "user": user,
-                    "domain": current_site.domain,
-                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                    "token": account_activation_token.make_token(user),
-                },
-            )
-            user.email_user(subject=subject, message=message)
-            messages.success(request, "Your account has been created! Activation email sent to your email.")
-            return redirect("accounts:login")
-    else:
-        registerForm = RegistrationForm()
-    return render(request, "accounts/register.html", {"form": registerForm})
-
-
-def account_activate(request, uidb64, token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = UserBase.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, user.DoesNotExist):
-        user = None
-    if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("accounts:dashboard")
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.email = form.cleaned_data["email"]
+        user.set_password(form.cleaned_data["password"])
+        user.is_active = False
         user.save()
-        messages.success(request, "Your account has been activated! You can now login.")
-        return redirect("accounts:dashboard")
-    else:
-        messages.error(request, "Activation link is invalid!")
-        return redirect("accounts:login")
+        current_site = get_current_site(self.request)
+        subject = "Activate your Account"
+        message = render_to_string(
+            "accounts/account_activation_email.html",
+            {
+                "user": user,
+                "domain": current_site.domain,
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                "token": account_activation_token.make_token(user),
+            },
+        )
+        user.email_user(subject=subject, message=message)
+        return super().form_valid(form)
+
+
+class ActivateAccount(View):
+    def get(self, request, uidb64, token):
+        if request.user.is_authenticated:
+            logout(request)
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = UserBase.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, user.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            messages.success(request, "Your account has been activated!")
+            login(request, user)
+            return redirect("accounts:dashboard")
+        else:
+            messages.error(request, "Activation link is invalid!")
+            return redirect("accounts:login")
 
 
 class PasswordReset(auth_views.PasswordResetView):
@@ -128,18 +132,12 @@ class ChangeUserDetail(LoginRequiredMixin, SuccessMessageMixin, FormView):
     # url name: edit_details
     template_name = "accounts/user/default_form.html"
     success_url = reverse_lazy("accounts:dashboard")
-    success_message = "Username changed successfully"
+    success_message = "Your account updated successfully"
     form_class = UserEditForm
     extra_context = {"title": "Change User detail"}
 
     def get_form(self, form_class=form_class):
         return form_class(instance=self.request.user, **self.get_form_kwargs())
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        return self.form_invalid(form)
 
     def form_valid(self, form):
         user = form.save()

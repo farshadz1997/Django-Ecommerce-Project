@@ -13,6 +13,13 @@
             <h4 class="h4">Return to the <a href="{%url 'accounts:dashboard'%}">dashboard</a></h4>
             {%endif%}
             <hr class="my-4"></hr>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {{message}}
+                    </div>
+                {% endfor %}
+            {%endif%}
             {%if form.errors%}
                 <div class="alert alert-danger" role="alert">
                     {%for f in form.errors.values%}
