@@ -24,4 +24,5 @@ urlpatterns = [
     path('api/brands/<str:brand>/', viewsets.BrandAPI.as_view(), name='api_brand_list'),
     path('api/on-sale/', viewsets.OnSaleAPI.as_view(), name='api_on_sale'),
     path('api/top-sellers/', viewsets.TopSellersAPI.as_view(), name='api_top_sellers'),
+    path('api/search/', viewsets.SearchAPI.as_view(), name='api_search'),
 ]

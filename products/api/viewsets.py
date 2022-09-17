@@ -66,6 +66,17 @@ class TopSellersAPI(APIView):
         return Response(serializer.data)
     
     
+class SearchAPI(APIView):
+    """
+    Return list of products filtered by search query.
+    """
+    
+    def get(self, request, *args, **kwargs):
+        products = Product.products.filter(title__icontains=self.request.data.get("query"))
+        serializer = ProductListSerializer(products, many=True, context={"request": request})
+        return Response(serializer.data)
+    
+    
 class ProductListCreateAPI(generics.ListCreateAPIView):
     """
     API endpoint that allows products to be viewed or created by admins.
