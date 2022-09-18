@@ -2,6 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from . import views
+from .api import viewsets
 
 app_name = "accounts"
 
@@ -26,7 +27,12 @@ urlpatterns = [
     path("addresses/default/<pk>/", views.AddressSetDefault.as_view(), name="set_default_address"),
     # Wishlist
     path("wishlist/", views.WishlistView.as_view(), name="wishlist"),
-    path("wishlist/add-remove/<id>", views.AddOrRemoveFromWishlistView.as_view(), name="add-remove-wishlist"),
+    path("wishlist/add-remove/<id>/", views.AddOrRemoveFromWishlistView.as_view(), name="add-remove-wishlist"),
     # Orders
     path("orders", views.OrdersView.as_view(), name="orders"),
+    # API
+    path("api/authenticate/", viewsets.AuthenticateUserAPI.as_view(), name="api_authenticate"),
+    path("api/addresses/", viewsets.AddressesAPI.as_view(), name="api_addresses"),
+    path("api/address/create/", viewsets.CreateAddressAPI.as_view(), name="api_create_address"),
+    path("api/address/<pk>/", viewsets.AddressAPI.as_view(), name="api_modify_address"),
 ]
