@@ -31,8 +31,11 @@ urlpatterns = [
     # Orders
     path("orders", views.OrdersView.as_view(), name="orders"),
     # API
+    path("api/register/", viewsets.RegisterAPI.as_view(), name="api_register"),
     path("api/authenticate/", viewsets.AuthenticateUserAPI.as_view(), name="api_authenticate"),
     path("api/addresses/", viewsets.AddressesAPI.as_view(), name="api_addresses"),
     path("api/address/create/", viewsets.CreateAddressAPI.as_view(), name="api_create_address"),
     path("api/address/<pk>/", viewsets.AddressAPI.as_view(), name="api_modify_address"),
+    path("api/change-password/", viewsets.ChangePasswordAPI.as_view(), name="api_change_password"),
+    path("api/update-user/", viewsets.UpdateUserAPI.as_view(), name="api_update_user"),
 ]

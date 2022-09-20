@@ -3,13 +3,11 @@ from django.contrib.auth import logout, login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.sites.shortcuts import get_current_site
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
-from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 from django.views.generic import CreateView, DeleteView, UpdateView, View, TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
@@ -59,18 +57,6 @@ class RegisterView(SuccessMessageMixin, FormView):
         user.set_password(form.cleaned_data["password"])
         user.is_active = False
         user.save()
-        current_site = get_current_site(self.request)
-        subject = "Activate your Account"
-        message = render_to_string(
-            "accounts/account_activation_email.html",
-            {
-                "user": user,
-                "domain": current_site.domain,
-                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                "token": account_activation_token.make_token(user),
-            },
-        )
-        user.email_user(subject=subject, message=message)
         return super().form_valid(form)
 
 

@@ -7,13 +7,26 @@ from rest_framework import permissions
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView
 
-from .serializers import AddressSerializer
+from .serializers import AddressSerializer, RegisterAccountSerializer, ChangePasswordSerializer, UpdateAccountSerializer
 from ..models import Address
+
+
+class RegisterAPI(APIView):
+    """
+    This API is used to register users
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = RegisterAccountSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.create(serializer.validated_data)
+        return Response({"email": serializer.validated_data["email"]}, status=status.HTTP_201_CREATED)
 
 
 class AuthenticateUserAPI(ObtainAuthToken):
     """
-    This class is used to authenticate user and generate token.
+    This API is used to authenticate user and generate token.
     """
 
     def post(self, request):
@@ -22,6 +35,41 @@ class AuthenticateUserAPI(ObtainAuthToken):
         user = serializer.validated_data["user"]
         token, created = Token.objects.get_or_create(user=user)
         return Response({"token": token.key, "email": user.email})
+    
+    
+class ChangePasswordAPI(APIView):
+    """
+    This API is used to change password
+    """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ChangePasswordSerializer
+
+    def post(self, request):
+        user = request.user
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if not user.check_password(serializer.validated_data["old_password"]):
+            return Response({"error": "Old password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+        user.set_password(serializer.validated_data["new_password"])
+        user.save()
+        return Response({"message": "Password changed successfully"}, status=status.HTTP_200_OK)
+    
+    
+class UpdateUserAPI(APIView):
+    """
+    This API is used to update user details
+    """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UpdateAccountSerializer
+
+    def put(self, request):
+        user = request.user
+        serializer = self.serializer_class(user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.update(user, serializer.validated_data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AddressesAPI(APIView):
@@ -72,3 +120,4 @@ class CreateAddressAPI(CreateAPIView):
         else:
             serializer.save(customer=request.user, country=country_code)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
