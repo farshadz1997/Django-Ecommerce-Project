@@ -1,5 +1,7 @@
 from decimal import Decimal
+
 from django.conf import settings
+
 from products.models import Product
 
 
@@ -29,9 +31,6 @@ class Basket:
         if product_id in self.basket:
             self.basket[product_id]["qty"] = qty
         else:
-            # if self.voucher["discount"] > 0:
-                # self.basket[product_id] = {"price": int(product.final_price - (product.final_price * self.voucher["discount"] / 100)), "qty": qty}
-            # else:
             self.basket[product_id] = {"price": str(product.final_price), "qty": qty}
 
         self.save()
@@ -92,6 +91,11 @@ class Basket:
     def set_discount(self, code, discount):
         self.voucher["discount"] = discount
         self.voucher["code"] = code
+        self.save()
+        
+    def remove_discount(self):
+        self.voucher["discount"] = 0
+        self.voucher["code"] = None
         self.save()
     
     def save(self):

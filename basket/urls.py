@@ -11,4 +11,5 @@ urlpatterns = [
     path('update/', views.basket_update, name = 'basket_update'),
     # API
     path('api/', viewsets.BasketAPI.as_view(), name='basket_api'),
+    path('api/voucher/', viewsets.VoucherAPI.as_view(), name='voucher_api'),
 ]
