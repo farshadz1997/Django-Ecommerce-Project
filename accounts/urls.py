@@ -33,6 +33,7 @@ urlpatterns = [
     # API
     path("api/register/", viewsets.RegisterAPI.as_view(), name="api_register"),
     path("api/authenticate/", viewsets.AuthenticateUserAPI.as_view(), name="api_authenticate"),
+    path("api/logout/", viewsets.LogoutAPI.as_view(), name="api_logout"),
     path("api/addresses/", viewsets.AddressesAPI.as_view(), name="api_addresses"),
     path("api/address/create/", viewsets.CreateAddressAPI.as_view(), name="api_create_address"),
     path("api/address/<pk>/", viewsets.AddressAPI.as_view(), name="api_modify_address"),

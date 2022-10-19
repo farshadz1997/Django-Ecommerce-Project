@@ -1,14 +1,14 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import permissions, status
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework import permissions
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .serializers import AddressSerializer, RegisterAccountSerializer, ChangePasswordSerializer, UpdateAccountSerializer
 from ..models import Address
+from .serializers import (AddressSerializer, ChangePasswordSerializer,
+                          RegisterAccountSerializer, UpdateAccountSerializer)
 
 
 class RegisterAPI(APIView):
@@ -35,7 +35,20 @@ class AuthenticateUserAPI(ObtainAuthToken):
         user = serializer.validated_data["user"]
         token, created = Token.objects.get_or_create(user=user)
         return Response({"token": token.key, "email": user.email})
-    
+
+
+class LogoutAPI(APIView):
+    """
+    This API is used to logout the user and clear the session
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def post(self, request):
+        request.session.clear()
+        request.user.auth_token.delete()
+        return Response("You have been loged out", status=status.HTTP_200_OK)
+ 
     
 class ChangePasswordAPI(APIView):
     """
@@ -74,7 +87,7 @@ class UpdateUserAPI(APIView):
 
 class AddressesAPI(APIView):
     """
-    This API is used to get user addresses.
+    This API is used to get all user addresses.
     """
 
     authentication_classes = [TokenAuthentication]
