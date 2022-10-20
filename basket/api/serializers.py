@@ -13,12 +13,26 @@ from orders.models import Voucher
 
 
 class BasketOverViewSerializer(serializers.Serializer):
-    total_qty = serializers.IntegerField(read_only=True)
-    total_price = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2)
-    total_price_without_discount = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2)
-    voucher = serializers.CharField(max_length=10, required=False)
-    discount = serializers.IntegerField(read_only=True, default=0)
+    total_qty = serializers.SerializerMethodField(read_only=True)
+    total_price = serializers.SerializerMethodField(read_only=True)
+    total_price_without_discount = serializers.SerializerMethodField(read_only=True)
+    voucher = serializers.SerializerMethodField(required=False)
+    discount = serializers.SerializerMethodField(read_only=True, default=0)
     
+    def get_total_qty(self, obj):
+        return len(obj)
+    
+    def get_total_price(self, obj):
+        return obj.get_total_price()
+    
+    def get_total_price_without_discount(self, obj):
+        return obj.get_total_price_without_discount()
+    
+    def get_voucher(self, obj):
+        return obj.voucher["code"]
+    
+    def get_discount(self, obj):
+        return obj.voucher["discount"]
 
 class BasketSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=True)

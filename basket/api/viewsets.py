@@ -19,7 +19,7 @@ class BasketAPI(APIView):
         basket = Basket(request)
         data = [{"id":id, "qty": item["qty"], "price": item["price"],} for id, item in basket.basket.items()]
         serializer = BasketSerializer(data, many=True, context={"request": request})
-        overview_serializer = self.get_basket_overview(request)
+        overview_serializer = BasketOverViewSerializer(basket)
         return Response(
             {
                 "basket": serializer.data,
@@ -36,7 +36,7 @@ class BasketAPI(APIView):
         serializer.is_valid(raise_exception=True)
         product = get_object_or_404(Product, id=product_id)
         basket.add(product, qty)
-        overview_serializer = self.get_basket_overview(request)
+        overview_serializer = BasketOverViewSerializer(Basket(request))
         return Response(
         {
             "basket": serializer.data,
@@ -52,7 +52,7 @@ class BasketAPI(APIView):
         serializer = BasketSerializer(data=request.data, partial=True, context={"request": request})
         serializer.is_valid(raise_exception=True)
         basket.update(request.data["id"], request.data["qty"])
-        overview_serializer = self.get_basket_overview(request)
+        overview_serializer = BasketOverViewSerializer(Basket(request))
         return Response(
             {
                 "basket": serializer.data,
@@ -67,23 +67,8 @@ class BasketAPI(APIView):
         serializer = BasketSerializer(data=request.data, partial=True, context={"request": request})
         serializer.is_valid(raise_exception=True)
         basket.delete(product_id)
-        overview_serializer = self.get_basket_overview(request)
-        return Response(
-        {
-            "basket_overview": overview_serializer.data,
-        },)
-    
-    def get_basket_overview(self, request):
-        basket = Basket(request)
-        basket_overview = {
-            "total_qty": len(basket),
-            "total_price": basket.get_total_price(),
-            "total_price_without_discount": basket.get_total_price_without_discount(),
-            "voucher": basket.voucher["code"],
-            "discount": basket.voucher["discount"]
-        }
-        overview_serializer = BasketOverViewSerializer(basket_overview)
-        return overview_serializer
+        overview_serializer = BasketOverViewSerializer(Basket(request))
+        return Response(overview_serializer.data)
     
     
 class VoucherAPI(APIView):
@@ -93,13 +78,8 @@ class VoucherAPI(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, *args, **kwargs):
-        overview_serializer = self.get_basket_overview(request)
-        return Response(
-            {
-                "basket_overview": overview_serializer.data,
-            },
-            status=status.HTTP_200_OK
-        )
+        overview_serializer = BasketOverViewSerializer(Basket(request))
+        return Response(overview_serializer.data)
         
     def post(self, request, *args, **kwargs):
         basket = Basket(request)
@@ -107,33 +87,11 @@ class VoucherAPI(APIView):
         serializer.is_valid(raise_exception=True)
         voucher = Voucher.objects.get(voucher_code=request.data["code"])
         basket.set_discount(voucher.voucher_code, voucher.discount)
-        overview_serializer = self.get_basket_overview(request)
-        return Response(
-            {
-                "overview": overview_serializer.data,
-            },
-            status=status.HTTP_200_OK
-        )
+        overview_serializer = BasketOverViewSerializer(basket)
+        return Response(overview_serializer.data)
         
     def delete(self, request, *args, **kwargs):
         basket = Basket(request)
         basket.remove_discount()
-        overview_serializer = self.get_basket_overview(request)
-        return Response(
-            {
-                "overview_basket": overview_serializer.data,
-            },
-            status=status.HTTP_200_OK
-        )
-        
-    def get_basket_overview(self, request):
-        basket = Basket(request)
-        basket_overview = {
-            "total_qty": len(basket),
-            "total_price": basket.get_total_price(),
-            "total_price_without_discount": basket.get_total_price_without_discount(),
-            "voucher": basket.voucher["code"],
-            "discount": basket.voucher["discount"]
-        }
-        overview_serializer = BasketOverViewSerializer(basket_overview)
-        return overview_serializer
+        overview_serializer = BasketOverViewSerializer(basket)
+        return Response(overview_serializer.data)

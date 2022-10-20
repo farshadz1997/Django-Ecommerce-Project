@@ -1,14 +1,16 @@
 import json
+
+from django.conf import settings
+from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
-from products.models import Product
-from orders.forms import VoucherForm
-from orders.models import Voucher
-from django.contrib import messages
-from django.conf import settings
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormMixin
+
+from orders.forms import VoucherForm
+from orders.models import Voucher
+from products.models import Product
 
 from .basket import Basket
 
