@@ -10,7 +10,18 @@ from ..basket import Basket
 from .serializers import BasketOverViewSerializer, BasketSerializer, VoucherSerializer
 
 
-class BasketAPI(APIView):
+class BasketOverviewAPI(APIView):
+    """
+    This API is used to get the basket overview
+    """
+
+    def get(self, request, *args, **kwargs):
+        basket = Basket(request)
+        serializer = BasketOverViewSerializer(basket)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class BasketDetailAPI(APIView):
     """
     This API is used to add, update and delete items from the basket.
     """

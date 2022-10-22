@@ -10,6 +10,7 @@ urlpatterns = [
     path('delete/', views.basket_delete, name = 'basket_delete'),
     path('update/', views.basket_update, name = 'basket_update'),
     # API
-    path('api/', viewsets.BasketAPI.as_view(), name='basket_api'),
+    path('api/overview/', viewsets.BasketOverviewAPI.as_view(), name='basket_overview_api'),
+    path('api/detail/', viewsets.BasketDetailAPI.as_view(), name='basket_detail_api'),
     path('api/voucher/', viewsets.VoucherAPI.as_view(), name='voucher_api'),
 ]
