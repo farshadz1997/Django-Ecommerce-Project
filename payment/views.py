@@ -51,7 +51,7 @@ class Error(LoginRequiredMixin, View):
 @login_required
 def payment(request):
     basket = Basket(request)
-    if basket.__len__() == 0:
+    if len(basket) == 0:
         messages.warning(request, 'Before proceeding to payment you need to add at least one product to your cart.')
         return redirect('basket:basket_summary')
     if Address.objects.filter(customer=request.user).count() == 0:
