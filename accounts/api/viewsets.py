@@ -8,7 +8,9 @@ from rest_framework.views import APIView
 
 from ..models import Address
 from .serializers import (AddressSerializer, ChangePasswordSerializer,
-                          RegisterAccountSerializer, UpdateAccountSerializer)
+                          RegisterAccountSerializer, UpdateAccountSerializer, ForgotPasswordSerializer, ResetPasswordSerializer)
+from orders.api.serializers import OrderSerializer
+from orders.models import Order
 
 
 class RegisterAPI(APIView):
@@ -34,7 +36,9 @@ class AuthenticateUserAPI(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         token, created = Token.objects.get_or_create(user=user)
-        return Response({"token": token.key, "email": user.email})
+        response =  Response({"token": token.key, "email": user.email})
+        response.set_cookie("Authorization", f"Token {token.key}")
+        return response
 
 
 class LogoutAPI(APIView):
@@ -47,7 +51,9 @@ class LogoutAPI(APIView):
     def post(self, request):
         request.session.clear()
         request.user.auth_token.delete()
-        return Response("You have been loged out", status=status.HTTP_200_OK)
+        response = Response("You have been loged out", status=status.HTTP_200_OK)
+        response.delete_cookie("Authorization")
+        return response
  
     
 class ChangePasswordAPI(APIView):
@@ -133,4 +139,15 @@ class CreateAddressAPI(CreateAPIView):
         else:
             serializer.save(customer=request.user, country=country_code)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
+
+
+class UserOrdersAPI(APIView):
+    """This API return all of the user orders"""
+    
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        orders = Order.objects.filter(user=request.user, billing_status=True)
+        serializer = OrderSerializer(orders, many=True, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    

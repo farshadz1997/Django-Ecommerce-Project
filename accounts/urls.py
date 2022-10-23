@@ -2,7 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from . import views
-from .api import viewsets
+from .api import viewsets as api_viewsets
 
 app_name = "accounts"
 
@@ -30,13 +30,14 @@ urlpatterns = [
     path("wishlist/add-remove/<id>/", views.AddOrRemoveFromWishlistView.as_view(), name="add-remove-wishlist"),
     # Orders
     path("orders", views.OrdersView.as_view(), name="orders"),
-    # API
-    path("api/register/", viewsets.RegisterAPI.as_view(), name="api_register"),
-    path("api/authenticate/", viewsets.AuthenticateUserAPI.as_view(), name="api_authenticate"),
-    path("api/logout/", viewsets.LogoutAPI.as_view(), name="api_logout"),
-    path("api/addresses/", viewsets.AddressesAPI.as_view(), name="api_addresses"),
-    path("api/address/create/", viewsets.CreateAddressAPI.as_view(), name="api_create_address"),
-    path("api/address/<pk>/", viewsets.AddressAPI.as_view(), name="api_modify_address"),
-    path("api/change-password/", viewsets.ChangePasswordAPI.as_view(), name="api_change_password"),
-    path("api/update-user/", viewsets.UpdateUserAPI.as_view(), name="api_update_user"),
+    ######## API ########
+    path("api/register/", api_viewsets.RegisterAPI.as_view(), name="api_register"),
+    path("api/authenticate/", api_viewsets.AuthenticateUserAPI.as_view(), name="api_authenticate"),
+    path("api/logout/", api_viewsets.LogoutAPI.as_view(), name="api_logout"),
+    path("api/addresses/", api_viewsets.AddressesAPI.as_view(), name="api_addresses"),
+    path("api/address/create/", api_viewsets.CreateAddressAPI.as_view(), name="api_create_address"),
+    path("api/address/<pk>/", api_viewsets.AddressAPI.as_view(), name="api_modify_address"),
+    path("api/change-password/", api_viewsets.ChangePasswordAPI.as_view(), name="api_change_password"),
+    path("api/update-user/", api_viewsets.UpdateUserAPI.as_view(), name="api_update_user"),
+    path("api/orders/", api_viewsets.UserOrdersAPI.as_view(), name="api_user_orders"),
 ]
