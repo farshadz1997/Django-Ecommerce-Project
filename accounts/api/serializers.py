@@ -4,7 +4,7 @@ from django_countries.serializer_fields import CountryField
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    country = CountryField(name_only=True)
+    country = CountryField(country_dict=True)
     
     class Meta:
         model = Address
@@ -63,3 +63,4 @@ class UpdateAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserBase
         fields = ("user_name", "first_name", "last_name")
+        
