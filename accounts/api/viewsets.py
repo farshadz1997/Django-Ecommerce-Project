@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from ..models import Address
 from .serializers import (AddressSerializer, ChangePasswordSerializer,
-                          RegisterAccountSerializer, UpdateAccountSerializer, ForgotPasswordSerializer, ResetPasswordSerializer)
+                          RegisterAccountSerializer, UpdateAccountSerializer)
 from orders.api.serializers import OrderSerializer
 from orders.models import Order
 
